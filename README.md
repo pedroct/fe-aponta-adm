@@ -292,6 +292,7 @@ Configuração em [vitest.config.ts](vitest.config.ts):
 - [TESTING.md](docs/TESTING.md) - Guia completo de testes
 - [API.md](docs/API.md) - Documentação detalhada da API
 - [CONTRIBUTING.md](docs/CONTRIBUTING.md) - Guia de contribuição
+- [GITFLOW.md](GITFLOW.md) - Fluxo de trabalho com Git e branches
 
 ## Scripts Disponíveis
 
