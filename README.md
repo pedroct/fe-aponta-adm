@@ -289,10 +289,18 @@ Configuração em [vitest.config.ts](vitest.config.ts):
 
 ## Documentação Adicional
 
+Toda a documentação técnica está organizada na pasta [docs/](docs/):
+
 - [TESTING.md](docs/TESTING.md) - Guia completo de testes
 - [API.md](docs/API.md) - Documentação detalhada da API
 - [CONTRIBUTING.md](docs/CONTRIBUTING.md) - Guia de contribuição
-- [GITFLOW.md](GITFLOW.md) - Fluxo de trabalho com Git e branches
+- [GITFLOW.md](docs/GITFLOW.md) - Fluxo de trabalho com Git e branches
+- [DESENVOLVIMENTO.md](docs/DESENVOLVIMENTO.md) - Guia de desenvolvimento
+- [INICIAR-WINDOWS.md](docs/INICIAR-WINDOWS.md) - Instruções para Windows
+- [ACESSO-RAPIDO.md](docs/ACESSO-RAPIDO.md) - Links e referências rápidas
+- [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) - Solução de problemas
+
+📖 **[Ver índice completo da documentação](docs/README.md)**
 
 ## Scripts Disponíveis
 

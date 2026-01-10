@@ -55,14 +55,92 @@ Diretrizes para contribuir com o projeto:
 
 ---
 
+### 🔄 [GITFLOW.md](GITFLOW.md)
+**Fluxo de Trabalho Git - Simplificado**
+
+Guia do fluxo de trabalho Git adequado para extensões Azure DevOps:
+- Estrutura de branches simplificada (main + branches temporárias)
+- Fluxo de trabalho recomendado
+- Versionamento e publicação de releases
+- Convenções de commit (Conventional Commits)
+- Tags e gerenciamento de versões
+- Pull Requests e code review
+- Comandos úteis e boas práticas
+
+**Quando usar**: Para entender como trabalhar com Git no projeto.
+
+---
+
+### 💻 [DESENVOLVIMENTO.md](DESENVOLVIMENTO.md)
+**Guia de Desenvolvimento**
+
+Instruções para configurar e desenvolver no projeto:
+- Configuração do ambiente
+- Estrutura de arquivos e pastas
+- Como executar em modo desenvolvimento
+- Build e empacotamento
+- Integração com Azure DevOps
+- Dicas de desenvolvimento
+
+**Quando usar**: Ao configurar o ambiente pela primeira vez ou para referência de comandos.
+
+---
+
+### 🪟 [INICIAR-WINDOWS.md](INICIAR-WINDOWS.md)
+**Instruções para Windows**
+
+Guia específico para desenvolvedores usando Windows:
+- Pré-requisitos para Windows
+- Instalação de dependências
+- Configuração de variáveis de ambiente
+- Scripts batch para Windows
+- Troubleshooting específico do Windows
+
+**Quando usar**: Se você está desenvolvendo em ambiente Windows.
+
+---
+
+### 🔗 [ACESSO-RAPIDO.md](ACESSO-RAPIDO.md)
+**Links e Referências Rápidas**
+
+Acesso rápido a recursos importantes:
+- Links do projeto
+- Documentação externa
+- Ferramentas e utilitários
+- Recursos do Azure DevOps
+- Referências úteis
+
+**Quando usar**: Para acesso rápido a links e recursos frequentemente utilizados.
+
+---
+
+### 🔧 [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
+**Solução de Problemas**
+
+Guia para resolver problemas comuns:
+- Problemas de instalação
+- Erros de build
+- Problemas com testes
+- Questões de integração com Azure DevOps
+- FAQ e soluções conhecidas
+
+**Quando usar**: Quando encontrar erros ou problemas durante o desenvolvimento.
+
+---
+
 ## Estrutura da Documentação
 
 ```
 docs/
-├── README.md            # Este arquivo (índice)
-├── TESTING.md           # Guia de testes
-├── API.md               # Documentação da API
-└── CONTRIBUTING.md      # Guia de contribuição
+├── README.md                # Este arquivo (índice)
+├── TESTING.md               # Guia de testes
+├── API.md                   # Documentação da API
+├── CONTRIBUTING.md          # Guia de contribuição
+├── GITFLOW.md               # Fluxo de trabalho Git
+├── DESENVOLVIMENTO.md       # Guia de desenvolvimento
+├── INICIAR-WINDOWS.md       # Instruções para Windows
+├── ACESSO-RAPIDO.md         # Links e referências rápidas
+└── TROUBLESHOOTING.md       # Solução de problemas
 ```
 
 ## Documentação Principal
@@ -71,25 +149,41 @@ Para informações gerais sobre o projeto, instalação, desenvolvimento e uso, 
 
 ## Links Rápidos
 
-### Desenvolvimento
+### Primeiros Passos
 - [Instalação](../README.md#instalação)
-- [Desenvolvimento](../README.md#desenvolvimento)
+- [Iniciar no Windows](INICIAR-WINDOWS.md)
+- [Configurar Ambiente](DESENVOLVIMENTO.md#configuração-do-ambiente)
+- [Acesso Rápido - Links Úteis](ACESSO-RAPIDO.md)
+
+### Desenvolvimento
+- [Guia de Desenvolvimento](DESENVOLVIMENTO.md)
+- [Executar Testes](TESTING.md#executando-testes)
 - [Build e Deploy](../README.md#build-e-deploy)
+- [Solução de Problemas](TROUBLESHOOTING.md)
+
+### Git e Versionamento
+- [Fluxo de Trabalho](GITFLOW.md#fluxo-de-trabalho-recomendado)
+- [Criar Branch](GITFLOW.md#opção-1-fluxo-simples-recomendado-para-equipe-pequena)
+- [Versionamento](GITFLOW.md#versionamento-da-extensão)
+- [Convenções de Commit](GITFLOW.md#convenções-de-commit)
 
 ### Testes
 - [Executar Testes](TESTING.md#executando-testes)
 - [Cobertura de Código](TESTING.md#cobertura-de-código)
+- [Escrever Testes](TESTING.md#escrevendo-testes)
 - [Melhores Práticas](TESTING.md#melhores-práticas)
 
 ### API
 - [Endpoints](API.md#endpoints-de-atividades)
 - [Autenticação](API.md#autenticação)
+- [Interfaces TypeScript](API.md#tipos-e-interfaces)
 - [Tratamento de Erros](API.md#tratamento-de-erros)
 
 ### Contribuição
 - [Como Contribuir](CONTRIBUTING.md#como-contribuir)
 - [Padrões de Código](CONTRIBUTING.md#padrões-de-código)
 - [Pull Requests](CONTRIBUTING.md#processo-de-pull-request)
+- [Reportar Bugs](CONTRIBUTING.md#reportando-bugs)
 
 ## Navegação
 

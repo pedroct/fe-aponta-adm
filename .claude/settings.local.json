@@ -38,7 +38,9 @@
       "Bash(git pull:*)",
       "Bash(git checkout:*)",
       "Bash(git branch:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git merge:*)",
+      "Bash(git tag:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
