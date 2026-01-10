@@ -1,289 +1,358 @@
-# GitFlow - Fluxo de Trabalho
+# Fluxo de Trabalho Git - Simplificado
 
-Este projeto segue o modelo **GitFlow** para gerenciamento de branches e versionamento.
+Este projeto utiliza um **fluxo simplificado de Git** adequado para extensões do Azure DevOps sem deploy contínuo.
+
+## Por que Simplificado?
+
+Como este é um projeto de extensão do Azure DevOps:
+- ✅ **Sem deploy automatizado** - Extensões são empacotadas manualmente (.vsix)
+- ✅ **Versionamento simples** - Controle de versão no marketplace do Azure DevOps
+- ✅ **Equipe pequena** - Não precisa de complexidade do GitFlow completo
+- ✅ **Foco no código** - Prioridade em manter histórico organizado
 
 ## Estrutura de Branches
 
 ### 🌳 Branch Principal: `main`
-- **Propósito**: Código em produção
-- **Estabilidade**: Sempre estável e pronto para deploy
-- **Proteção**: Branch protegida, apenas merges via Pull Request
-- **Origem dos merges**: Apenas de `release/*` ou `hotfix/*`
+- **Propósito**: Código estável e versionado
+- **Conteúdo**: Todas as versões publicadas da extensão
+- **Proteção**: Recomendado proteger para merges via Pull Request
+- **Tags**: Cada versão publicada deve ter uma tag (v1.0.0, v1.1.0, etc.)
 
-### 🔨 Branch de Desenvolvimento: `develop`
-- **Propósito**: Integração contínua de features
-- **Estabilidade**: Código testado mas não necessariamente em produção
-- **Base para**: Criação de `feature/*` e `release/*`
-- **Proteção**: Branch protegida, merges via Pull Request
+### 🔨 Branch de Desenvolvimento: `develop` (Opcional)
+- **Propósito**: Integração de features antes de versionar
+- **Uso**: Apenas se houver múltiplas pessoas trabalhando simultaneamente
+- **Para equipes pequenas**: Trabalhar direto em `main` com feature branches é suficiente
 
-### ✨ Branches de Feature: `feature/*`
-- **Propósito**: Desenvolvimento de novas funcionalidades
-- **Nomenclatura**: `feature/nome-da-feature`
-- **Base**: Sempre criada a partir de `develop`
-- **Merge para**: `develop` via Pull Request
-- **Ciclo de vida**: Deletada após merge
+## Fluxo de Trabalho Recomendado
 
-**Exemplos**:
-- `feature/cadastro-usuarios`
-- `feature/relatorio-mensal`
-- `feature/autenticacao-oauth`
-
-### 🚀 Branches de Release: `release/*`
-- **Propósito**: Preparação para lançamento de versão
-- **Nomenclatura**: `release/X.Y.Z` (seguindo [Semantic Versioning](https://semver.org/))
-- **Base**: Criada a partir de `develop`
-- **Merge para**: `main` E `develop`
-- **Atividades**: Bug fixes, ajustes finais, atualização de versão
-- **Ciclo de vida**: Deletada após merge
-
-**Exemplos**:
-- `release/1.0.0` - Primeiro lançamento
-- `release/1.1.0` - Nova feature
-- `release/2.0.0` - Breaking changes
-
-### 🔥 Branches de Hotfix: `hotfix/*`
-- **Propósito**: Correções urgentes em produção
-- **Nomenclatura**: `hotfix/X.Y.Z` ou `hotfix/descricao`
-- **Base**: Criada a partir de `main`
-- **Merge para**: `main` E `develop`
-- **Ciclo de vida**: Deletada após merge
-
-**Exemplos**:
-- `hotfix/1.0.1` - Correção de bug crítico
-- `hotfix/seguranca-autenticacao`
-
-## Fluxo de Trabalho
-
-### 1️⃣ Nova Feature
+### Opção 1: Fluxo Simples (Recomendado para equipe pequena)
 
 ```bash
-# 1. Atualizar develop
-git checkout develop
-git pull origin develop
-
-# 2. Criar branch de feature
-git checkout -b feature/minha-nova-feature
-
-# 3. Desenvolver e commitar
-git add .
-git commit -m "feat: implementar nova feature"
-
-# 4. Push para o repositório
-git push -u origin feature/minha-nova-feature
-
-# 5. Criar Pull Request no GitLab
-# feature/minha-nova-feature → develop
-
-# 6. Após aprovação e merge, deletar branch local
-git checkout develop
-git pull origin develop
-git branch -d feature/minha-nova-feature
-```
-
-### 2️⃣ Preparar Release
-
-```bash
-# 1. Criar branch de release a partir de develop
-git checkout develop
-git pull origin develop
-git checkout -b release/1.1.0
-
-# 2. Atualizar versão no package.json
-# 3. Atualizar CHANGELOG.md
-# 4. Fazer ajustes finais e correções
-
-git add .
-git commit -m "chore: preparar release v1.1.0"
-
-# 5. Push da branch de release
-git push -u origin release/1.1.0
-
-# 6. Criar Pull Requests:
-# - release/1.1.0 → main
-# - release/1.1.0 → develop
-
-# 7. Após merge, criar tag
+# 1. Criar branch para nova funcionalidade/correção
 git checkout main
 git pull origin main
+git checkout -b minha-alteracao
+
+# 2. Desenvolver e commitar
+git add .
+git commit -m "feat: adicionar nova funcionalidade"
+
+# 3. Push da branch
+git push -u origin minha-alteracao
+
+# 4. Criar Pull Request no GitLab
+# minha-alteracao → main
+
+# 5. Após aprovação e merge
+git checkout main
+git pull origin main
+git branch -d minha-alteracao
+```
+
+### Opção 2: Com Branch Develop (Para equipe maior)
+
+```bash
+# 1. Criar branch a partir de develop
+git checkout develop
+git pull origin develop
+git checkout -b minha-feature
+
+# 2. Desenvolver e commitar
+git add .
+git commit -m "feat: nova feature"
+
+# 3. Criar PR para develop
+git push -u origin minha-feature
+
+# 4. Quando pronto para nova versão
+git checkout main
+git merge develop
 git tag -a v1.1.0 -m "Release v1.1.0"
-git push origin v1.1.0
-
-# 8. Deletar branch de release
-git branch -d release/1.1.0
-git push origin --delete release/1.1.0
+git push origin main --tags
 ```
 
-### 3️⃣ Hotfix de Emergência
+## Versionamento da Extensão
+
+### Quando Criar Nova Versão
+
+Atualize a versão no `vss-extension.json` quando:
+- ✅ Adicionar nova funcionalidade
+- ✅ Corrigir bugs importantes
+- ✅ Fazer melhorias significativas
+
+### Semantic Versioning
+
+Seguir [Semantic Versioning](https://semver.org/) (MAJOR.MINOR.PATCH):
+
+- **MAJOR** (X.0.0): Mudanças incompatíveis (breaking changes)
+- **MINOR** (0.X.0): Novas funcionalidades compatíveis
+- **PATCH** (0.0.X): Correções de bugs
+
+### Processo de Publicação
 
 ```bash
-# 1. Criar branch de hotfix a partir de main
-git checkout main
-git pull origin main
-git checkout -b hotfix/1.0.1
+# 1. Atualizar versão no vss-extension.json
+# "version": "1.1.0"
 
-# 2. Corrigir o bug
-git add .
-git commit -m "fix: corrigir bug crítico em produção"
+# 2. Atualizar package.json (manter sincronizado)
+# "version": "1.1.0"
 
-# 3. Push da branch de hotfix
-git push -u origin hotfix/1.0.1
+# 3. Commitar mudança de versão
+git add vss-extension.json package.json
+git commit -m "chore: bump version to 1.1.0"
 
-# 4. Criar Pull Requests:
-# - hotfix/1.0.1 → main
-# - hotfix/1.0.1 → develop
+# 4. Criar tag
+git tag -a v1.1.0 -m "Release v1.1.0 - Descrição das mudanças"
+git push origin main --tags
 
-# 5. Após merge, criar tag
-git checkout main
-git pull origin main
-git tag -a v1.0.1 -m "Hotfix v1.0.1"
-git push origin v1.0.1
+# 5. Empacotar extensão
+npm run build
+npm run package
 
-# 6. Deletar branch de hotfix
-git branch -d hotfix/1.0.1
-git push origin --delete hotfix/1.0.1
+# 6. Publicar manualmente no Azure DevOps Marketplace
+# Upload do arquivo .vsix gerado
 ```
 
 ## Convenções de Commit
 
-Seguimos o padrão [Conventional Commits](https://www.conventionalcommits.org/):
+Seguir [Conventional Commits](https://www.conventionalcommits.org/) para histórico organizado:
 
 ### Tipos de Commit
 
 - **feat**: Nova funcionalidade
 - **fix**: Correção de bug
 - **docs**: Alteração em documentação
-- **style**: Formatação, ponto e vírgula, etc (sem mudança de código)
+- **style**: Formatação (sem mudança de lógica)
 - **refactor**: Refatoração de código
 - **test**: Adição ou correção de testes
-- **chore**: Tarefas de manutenção, configs, etc
-- **perf**: Melhorias de performance
-- **ci**: Mudanças em CI/CD
-- **build**: Mudanças no sistema de build
-- **revert**: Reverter commit anterior
+- **chore**: Tarefas de manutenção (configs, build, etc.)
 
 ### Formato
 
 ```
-<tipo>(<escopo>): <descrição curta>
+<tipo>: <descrição curta>
 
-<corpo opcional>
-
-<rodapé opcional>
+<corpo opcional - detalhes da mudança>
 ```
 
 ### Exemplos
 
 ```bash
-# Feature
-git commit -m "feat(atividades): adicionar campo de prioridade"
+# Nova funcionalidade
+git commit -m "feat: adicionar filtro por projeto nas atividades"
 
-# Bug fix
-git commit -m "fix(api): corrigir erro ao listar projetos vazios"
+# Correção de bug
+git commit -m "fix: corrigir erro ao salvar atividade sem descrição"
 
 # Documentação
-git commit -m "docs: atualizar README com instruções de deploy"
+git commit -m "docs: atualizar README com instruções de instalação"
 
-# Breaking change
-git commit -m "feat(auth)!: migrar para OAuth 2.0
+# Manutenção
+git commit -m "chore: atualizar dependências do projeto"
 
-BREAKING CHANGE: autenticação básica foi removida"
+# Com descrição detalhada
+git commit -m "feat: implementar paginação na lista de atividades
+
+- Adicionar componente de paginação
+- Atualizar API para suportar limit/offset
+- Adicionar testes de paginação"
 ```
 
-## Versionamento Semântico
+## Tags e Releases
 
-Seguimos [Semantic Versioning](https://semver.org/) (MAJOR.MINOR.PATCH):
+### Criar Tag
 
-- **MAJOR** (X.0.0): Mudanças incompatíveis na API (breaking changes)
-- **MINOR** (0.X.0): Novas funcionalidades compatíveis
-- **PATCH** (0.0.X): Correções de bugs compatíveis
+```bash
+# Tag anotada (recomendado)
+git tag -a v1.0.0 -m "Release v1.0.0 - Primeira versão estável"
 
-### Exemplos
+# Push da tag
+git push origin v1.0.0
 
-- `1.0.0` → `1.0.1`: Correção de bug
-- `1.0.1` → `1.1.0`: Nova feature
-- `1.1.0` → `2.0.0`: Breaking change
+# Ou push de todas as tags
+git push origin --tags
+```
+
+### Listar Tags
+
+```bash
+# Listar todas as tags
+git tag
+
+# Ver detalhes de uma tag
+git show v1.0.0
+```
+
+### Deletar Tag (se necessário)
+
+```bash
+# Deletar local
+git tag -d v1.0.0
+
+# Deletar remota
+git push origin --delete v1.0.0
+```
 
 ## Pull Requests
 
-### Checklist
-
-Antes de criar um Pull Request, verifique:
+### Checklist Antes de Criar PR
 
 - [ ] Código está funcionando localmente
 - [ ] Testes estão passando (`npm test`)
-- [ ] Cobertura de testes mantida ou melhorada
+- [ ] Build está funcionando (`npm run build`)
 - [ ] Código segue os padrões do projeto
-- [ ] Documentação atualizada (se necessário)
 - [ ] Commit messages seguem convenções
-- [ ] Branch está atualizada com a base
+- [ ] Branch está atualizada com main/develop
 
 ### Template de PR
 
 ```markdown
 ## Descrição
-[Descreva as mudanças realizadas]
+[Descreva o que foi implementado/corrigido]
 
 ## Tipo de Mudança
-- [ ] Bug fix
-- [ ] Nova feature
-- [ ] Breaking change
+- [ ] Nova funcionalidade
+- [ ] Correção de bug
 - [ ] Documentação
+- [ ] Refatoração
 
-## Issues Relacionadas
-Closes #[número da issue]
+## Como Testar
+1. [Passo 1]
+2. [Passo 2]
+3. [Resultado esperado]
 
 ## Checklist
-- [ ] Testes adicionados/atualizados
-- [ ] Documentação atualizada
-- [ ] Código revisado
-- [ ] Build está passando
+- [ ] Código testado localmente
+- [ ] Testes passando
+- [ ] Build funcionando
+- [ ] Documentação atualizada (se necessário)
 ```
 
-## Proteção de Branches
+## Boas Práticas
 
-### `main`
-- ✅ Requer Pull Request
-- ✅ Requer aprovação de pelo menos 1 revisor
-- ✅ Requer CI passando
-- ❌ Push direto bloqueado
-- ❌ Force push bloqueado
+### ✅ Fazer
 
-### `develop`
-- ✅ Requer Pull Request
-- ✅ Requer CI passando
-- ❌ Push direto bloqueado (exceto emergências)
+- **Commits pequenos e frequentes** - Facilita revisão e rollback
+- **Mensagens descritivas** - Explique o "porquê", não só o "o quê"
+- **Pull Requests** - Sempre revisar código antes de mergear
+- **Tags para versões** - Marcar cada versão publicada
+- **Testar antes de commitar** - Garantir que não quebra nada
+- **Atualizar documentação** - Manter docs sincronizadas com código
 
-## Links Úteis
+### ❌ Evitar
 
-- [Documentação GitFlow](https://nvie.com/posts/a-successful-git-branching-model/)
-- [Conventional Commits](https://www.conventionalcommits.org/)
-- [Semantic Versioning](https://semver.org/)
-- [GitHub Flow vs GitFlow](https://lucamezzalira.com/2014/03/10/git-flow-vs-github-flow/)
+- **Commits gigantes** - Dificulta revisão e debugging
+- **Mensagens vagas** - "fix", "update", "changes" não ajudam
+- **Push direto em main** - Sempre usar branches e PR
+- **Código não testado** - Testar localmente primeiro
+- **Versões sem tag** - Toda publicação deve ter tag
 
-## Dúvidas Frequentes
+## Comandos Úteis
 
-### Quando usar feature vs hotfix?
-- **Feature**: Novas funcionalidades, melhorias planejadas
-- **Hotfix**: Bugs críticos em produção que precisam correção imediata
+### Atualizar Branch Local
 
-### Posso commitar direto em develop?
-Não. Sempre use branches de feature e Pull Requests.
-
-### Como atualizar minha feature com mudanças do develop?
 ```bash
-git checkout feature/minha-feature
-git fetch origin
-git rebase origin/develop
-# Resolver conflitos se necessário
-git push --force-with-lease
+# Atualizar main local
+git checkout main
+git pull origin main
+
+# Atualizar sua branch com mudanças do main
+git checkout minha-branch
+git merge main
+# Ou com rebase (histórico mais limpo)
+git rebase main
 ```
 
-### Quando deletar branches?
-- Features e hotfixes: após merge
-- Releases: após merge e tag criada
-- Nunca: `main` e `develop`
+### Ver Histórico
+
+```bash
+# Histórico resumido
+git log --oneline --graph --all
+
+# Últimos 10 commits
+git log -10
+
+# Histórico de um arquivo
+git log -- caminho/arquivo.ts
+```
+
+### Desfazer Mudanças
+
+```bash
+# Desfazer mudanças não commitadas
+git checkout -- arquivo.ts
+
+# Desfazer último commit (mantém alterações)
+git reset --soft HEAD~1
+
+# Desfazer último commit (descarta alterações)
+git reset --hard HEAD~1
+```
+
+## Proteção de Branches (GitLab)
+
+### Configurar Branch Protegida
+
+No GitLab: **Settings → Repository → Protected Branches**
+
+**Para `main`**:
+- ✅ Allowed to merge: Maintainers
+- ✅ Allowed to push: No one
+- ✅ Require approval before merging: Opcional
+
+## Estrutura Recomendada para Este Projeto
+
+```
+Estrutura Simples:
+main (branch principal)
+  ├── feature-1 (branch temporária)
+  ├── bugfix-login (branch temporária)
+  └── atualizar-docs (branch temporária)
+
+Após merge, deletar branches temporárias.
+```
+
+## FAQ
+
+### Preciso usar branch develop?
+**Não obrigatório.** Para equipes pequenas ou projetos simples, trabalhar direto com branches a partir de `main` é suficiente.
+
+### Quando criar uma tag?
+Sempre que publicar uma nova versão da extensão no Azure DevOps Marketplace.
+
+### Posso commitar direto em main?
+**Não recomendado.** Sempre use branches e Pull Requests para manter histórico organizado e permitir revisão.
+
+### Como sincronizar vss-extension.json com package.json?
+Sempre atualizar as duas versões juntas:
+```json
+// vss-extension.json
+"version": "1.1.0"
+
+// package.json
+"version": "1.1.0"
+```
+
+### O que fazer se errei um commit?
+```bash
+# Se ainda não fez push
+git commit --amend
+
+# Se já fez push
+git revert HEAD  # Cria novo commit desfazendo o anterior
+```
+
+## Conclusão
+
+Este fluxo simplificado é ideal para:
+- ✅ Extensões do Azure DevOps
+- ✅ Projetos sem deploy automatizado
+- ✅ Equipes pequenas ou médias
+- ✅ Foco em versionamento e organização
+
+**Mantenha simples, mas organizado!**
 
 ---
 
-**Versão**: 1.0.0
+**Versão**: 2.0.0 (Simplificado)
 **Última atualização**: 2026-01-10
