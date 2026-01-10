@@ -1,0 +1,47 @@
+{
+  "name": "fe-aponta-adm",
+  "version": "1.0.0",
+  "description": "Extensão Azure DevOps para cadastro de atividades",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "webpack --mode production",
+    "build:dev": "SET DEV_MODE=true&& webpack --mode development",
+    "dev": "webpack --mode development --watch",
+    "start": "npm run build:dev && npx http-server dist -p 8082 -o",
+    "package": "tfx extension create --manifest-globs vss-extension.json",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage"
+  },
+  "dependencies": {
+    "azure-devops-extension-api": "^4.0.2",
+    "azure-devops-extension-sdk": "^4.0.2",
+    "azure-devops-ui": "^2.257.0",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^12.1.5",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/react": "^16.14.34",
+    "@types/react-dom": "^16.9.18",
+    "@vitest/coverage-v8": "^2.1.9",
+    "@vitest/ui": "^2.1.9",
+    "copy-webpack-plugin": "^9.1.0",
+    "css-loader": "^6.7.1",
+    "dotenv": "^17.2.3",
+    "dotenv-webpack": "^8.1.1",
+    "html-webpack-plugin": "^5.5.0",
+    "http-server": "^14.1.1",
+    "jsdom": "^27.4.0",
+    "style-loader": "^3.3.1",
+    "tfx-cli": "^0.15.0",
+    "ts-loader": "^9.4.2",
+    "typescript": "^4.9.5",
+    "vitest": "^2.1.9",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.11.1"
+  }
+}

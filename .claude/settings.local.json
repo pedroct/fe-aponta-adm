@@ -1,0 +1,43 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(npm install:*)",
+      "Bash(npm start)",
+      "Bash(pkill:*)",
+      "Bash(cat:*)",
+      "Bash(npx webpack serve:*)",
+      "Bash(npm run build:dev:*)",
+      "Bash(node --version:*)",
+      "Bash(npm --version:*)",
+      "Bash(echo:*)",
+      "Bash($HOME/.nvm/versions/node/v24.12.0/bin/npm --version)",
+      "Bash($HOME/.nvm/versions/node/v24.12.0/bin/node --version)",
+      "Bash(export NVM_DIR=\"$HOME/.nvm\")",
+      "Bash([ -s \"$NVM_DIR/nvm.sh\" ])",
+      "Bash(. \"$NVM_DIR/nvm.sh\")",
+      "Bash(nvm use default)",
+      "Bash(DEV_MODE=true npx webpack:*)",
+      "Bash(chmod:*)",
+      "Bash(npx http-server:*)",
+      "Bash(curl:*)",
+      "Bash(netstat:*)",
+      "Bash(ss:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill:*)",
+      "Bash(ping:*)",
+      "Bash(npm test:*)",
+      "Bash(npx vitest:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(git init:*)",
+      "Bash(git config:*)",
+      "Bash(git remote add:*)",
+      "Bash(git add:*)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "shadcn",
+    "figma"
+  ]
+}

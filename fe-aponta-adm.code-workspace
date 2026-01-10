@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"claudeCode.useTerminal": true,
+		"claudeCodeChat.permissions.yoloMode": true,
+		"chat.useAgentSkills": true
+	}
+}

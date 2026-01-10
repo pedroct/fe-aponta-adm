@@ -1,0 +1,35 @@
+{
+  "manifestVersion": 1,
+  "id": "aponta-adm",
+  "name": "Apontamentos - Administração",
+  "version": "1.0.0",
+  "publisher": "seu-publisher-id",
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "description": "Extensão para gerenciamento de apontamentos de atividades",
+  "categories": ["Azure Boards"],
+  "icons": {
+    "default": "images/logo.png"
+  },
+  "contributions": [
+    {
+      "id": "aponta-hub",
+      "type": "ms.vss-web.hub",
+      "description": "Cadastro de Atividades",
+      "targets": ["ms.vss-work-web.work-hub-group"],
+      "properties": {
+        "name": "Apontamentos",
+        "uri": "dist/index.html"
+      }
+    }
+  ],
+  "files": [
+    {
+      "path": "dist",
+      "addressable": true
+    }
+  ]
+}
