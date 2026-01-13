@@ -1,33 +1,33 @@
-# Documentação do Projeto
+# 📚 Documentação - Índice Central
 
-Bem-vindo à documentação completa do projeto **Apontamentos - Extensão Azure DevOps**.
+Documentação completa do projeto fe-aponta-adm, organizada por categorias temáticas.
 
-## Índice de Documentação
+## 📖 Categorias de Documentação
 
-### 📘 [TESTING.md](TESTING.md)
-**Guia Completo de Testes**
+### 🚀 [Guias de Uso](./guides/)
+Instruções práticas para usar e desenvolver o projeto.
 
-Documentação detalhada sobre testes no projeto:
-- Tecnologias de teste (Vitest, Testing Library)
-- Como executar testes
-- Estrutura e organização de testes
-- Exemplos práticos de testes unitários e de componentes
-- Cobertura de código e métricas
-- Melhores práticas (padrão AAA, mocks, validações)
-- Debugging e solução de problemas
-- Recursos adicionais
+- **[INICIAR-WINDOWS.md](./guides/INICIAR-WINDOWS.md)** - Primeiros passos no Windows
+- **[DESENVOLVIMENTO.md](./guides/DESENVOLVIMENTO.md)** - Guia de desenvolvimento
+- **[CONTRIBUTING.md](./guides/CONTRIBUTING.md)** - Como contribuir
+- **[QUICK_REFERENCE.md](./guides/QUICK_REFERENCE.md)** - Referência rápida
 
-**Quando usar**: Para entender como escrever, executar e manter testes no projeto.
+### 🏗️ [Arquitetura e Design](./architecture/)
+Documentação técnica sobre a arquitetura.
 
----
+- **[CONTEXT.md](./architecture/CONTEXT.md)** - Análise e contexto
+- **[SCAFFOLD_PLAN.md](./architecture/SCAFFOLD_PLAN.md)** - Plano de implementação
+- **[IMPLEMENTATION_SUMMARY.md](./architecture/IMPLEMENTATION_SUMMARY.md)** - Resumo
+- **[CODE_SNIPPETS.md](./architecture/CODE_SNIPPETS.md)** - Trechos importantes
 
-### 📗 [API.md](API.md)
-**Documentação da API**
+### 🔌 [API e Integrações](./api/)
+Documentação sobre APIs.
 
-Referência completa da API REST utilizada pela extensão:
-- Configuração e autenticação
-- Endpoints de Atividades (CRUD completo)
-- Endpoints de Projetos
+- **[API.md](./api/API.md)** - Referência completa de APIs
+- **[ACESSO-RAPIDO.md](./api/ACESSO-RAPIDO.md)** - Acesso rápido
+
+### ✅ [Testes](./testing/)
+Guias e documentação de testes.
 - Tipos e interfaces TypeScript
 - Tratamento de erros
 - Exemplos de requisições e respostas

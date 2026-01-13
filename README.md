@@ -40,14 +40,105 @@ Extensão para gerenciamento de cadastro de atividades no Azure DevOps, permitin
 
 ```
 fe-aponta-adm/
-├── src/
+│
+├── 📁 config/                          # Arquivos de configuração
+│   ├── webpack.config.js               # Config webpack (prod/dev)
+│   ├── webpack.dev.config.js           # Config webpack dev
+│   ├── .env.example                    # Template de variáveis
+│   └── README.md
+│
+├── 📁 scripts/                         # Scripts de automação
+│   ├── start.bat                       # Iniciar projeto Windows
+│   ├── test-connection.ps1             # Testar conexão Azure DevOps
+│   ├── reorganize-project.ps1          # Reorganizar projeto
+│   └── README.md
+│
+├── 📁 docs/                            # Documentação (LEIA PRIMEIRO: docs/README.md)
+│   ├── 📁 guides/                      # Guias de uso
+│   │   ├── INICIAR-WINDOWS.md          # Como instalar
+│   │   ├── DESENVOLVIMENTO.md          # Guia desenvolvimento
+│   │   ├── CONTRIBUTING.md             # Como contribuir
+│   │   ├── QUICK_REFERENCE.md          # Comandos úteis
+│   │   └── README.md
+│   │
+│   ├── 📁 architecture/                # Arquitetura e design
+│   │   ├── CONTEXT.md                  # Análise do projeto
+│   │   ├── SCAFFOLD_PLAN.md            # Planejamento
+│   │   ├── IMPLEMENTATION_SUMMARY.md   # Resumo implementação
+│   │   ├── CODE_SNIPPETS.md            # Exemplos de código
+│   │   └── README.md
+│   │
+│   ├── 📁 api/                         # Documentação de APIs
+│   │   ├── API.md                      # Referência de APIs
+│   │   ├── ACESSO-RAPIDO.md            # Endpoints principais
+│   │   └── README.md
+│   │
+│   ├── 📁 testing/                     # Testes e QA
+│   │   ├── TESTING.md                  # Guia de testes
+│   │   ├── TESTE_HUBS.md               # Testes em Azure DevOps
+│   │   ├── PRONTO_PARA_TESTES.md       # Status de testes
+│   │   ├── TECHNICAL_VALIDATION.md     # Validações técnicas
+│   │   └── README.md
+│   │
+│   ├── 📁 troubleshooting/             # Resolução de problemas
+│   │   ├── TROUBLESHOOTING.md          # Guia troubleshooting
+│   │   ├── BUILD_STATUS.md             # Status de build
+│   │   └── README.md
+│   │
+│   └── README.md                       # Índice central de docs
+│
+├── 📁 src/                             # Código-fonte
 │   ├── components/
-│   │   ├── AtividadesCadastro.tsx          # Componente principal
+│   │   ├── AtividadesCadastro.tsx      # Componente principal
 │   │   └── __tests__/
-│   │       └── AtividadesCadastro.test.tsx # Testes do componente
+│   │       └── AtividadesCadastro.test.tsx
 │   ├── services/
-│   │   ├── apiService.ts                   # Serviço de API
+│   │   ├── apiService.ts               # Serviço de API
 │   │   └── __tests__/
+│   │       └── apiService.test.ts
+│   ├── context/
+│   │   └── AuthContext.tsx             # Contexto de autenticação
+│   ├── test/
+│   │   └── setup.ts                    # Setup de testes
+│   ├── index.tsx                       # Entry point produção
+│   └── index-dev.tsx                   # Entry point desenvolvimento
+│
+├── 📁 public/                          # Assets estáticos
+│   ├── index.html
+│   └── dev.html
+│
+├── 📁 dist/                            # Build output (gerado)
+│   ├── index.html
+│   └── index.js
+│
+├── 📁 coverage/                        # Coverage reports (gerado)
+│
+├── 📄 Arquivos de Raiz
+│   ├── package.json                    # Dependências
+│   ├── package-lock.json               # Lock file
+│   ├── tsconfig.json                   # Config TypeScript
+│   ├── vitest.config.ts                # Config Vitest
+│   ├── vss-extension.json              # Manifesto extensão
+│   ├── fe-aponta-adm.code-workspace    # Workspace VS Code
+│   ├── README.md                       # Este arquivo
+│   ├── QUICK_NAVIGATION.md             # Guia de navegação
+│   ├── REORGANIZATION_SUMMARY.md       # Resumo reorganização
+│   ├── REORGANIZATION_MAP.md           # Mapa detalhado
+│   └── LEIA-ME-PRIMEIRO.txt            # Guia inicial
+```
+
+## 📚 Documentação Rápida
+
+**⭐ COMECE POR AQUI:**
+- [docs/README.md](docs/README.md) - Índice central de documentação
+- [QUICK_NAVIGATION.md](QUICK_NAVIGATION.md) - Encontre rápido o que precisa
+
+**Principais Documentos:**
+- [Guia de Início](docs/guides/INICIAR-WINDOWS.md) - Como instalar e começar
+- [Guia de Desenvolvimento](docs/guides/DESENVOLVIMENTO.md) - Como desenvolver
+- [Referência de APIs](docs/api/API.md) - Documentação de APIs
+- [Guia de Testes](docs/testing/TESTING.md) - Como testar
+- [Resolução de Problemas](docs/troubleshooting/TROUBLESHOOTING.md) - Troubleshooting
 │   │       └── apiService.test.ts          # Testes do serviço
 │   ├── test/
 │   │   └── setup.ts                        # Configuração de testes

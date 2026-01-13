@@ -2,21 +2,58 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as SDK from 'azure-devops-extension-sdk';
 import { AtividadesCadastro } from './components/AtividadesCadastro';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { setAzureDevOpsToken } from './services/apiService';
 
-// Inicializar o SDK do Azure DevOps
-SDK.init({
-  loaded: false,
-  applyTheme: true
-});
+// Componente wrapper que usa o contexto de autenticação
+function AppWithAuth() {
+  const { token, isLoading, error } = useAuth();
 
-// Registrar quando a extensão estiver pronta
-SDK.ready().then(() => {
-  // Renderizar o componente principal
+  React.useEffect(() => {
+    if (token) {
+      setAzureDevOpsToken(token);
+      console.log('[App] Token do Azure DevOps configurado no serviço de API');
+    }
+  }, [token]);
+
+  if (isLoading) {
+    return <div style={{ padding: '20px' }}>Carregando autenticação...</div>;
+  }
+
+  if (error) {
+    console.warn('[App] Erro de autenticação:', error);
+    // Continuar mesmo com erro de autenticação
+  }
+
+  return <AtividadesCadastro />;
+}
+
+// Função para renderizar a aplicação
+function renderApp() {
   ReactDOM.render(
-    <AtividadesCadastro />,
+    <AuthProvider>
+      <AppWithAuth />
+    </AuthProvider>,
     document.getElementById('root')
   );
+}
 
-  // Notificar que a extensão foi carregada
-  SDK.notifyLoadSucceeded();
-});
+// Tentar inicializar o SDK do Azure DevOps quando disponível.
+// Em modo standalone (http-server / localhost) o handshake pode falhar —
+// nesse caso caímos back para renderizar a aplicação sem o SDK.
+try {
+  SDK.init({ loaded: false, applyTheme: true });
+
+  SDK.ready()
+    .then(() => {
+      renderApp();
+      try { SDK.notifyLoadSucceeded(); } catch (e) { /* ignore */ }
+    })
+    .catch(err => {
+      console.warn('Azure DevOps SDK handshake failed, rendering standalone:', err);
+      renderApp();
+    });
+} catch (err) {
+  console.warn('Azure DevOps SDK not available, rendering standalone:', err);
+  renderApp();
+}

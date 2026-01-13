@@ -1,35 +1,72 @@
 {
   "manifestVersion": 1,
-  "id": "aponta-adm",
-  "name": "Apontamentos - Administração",
+  "id": "aponta-gestao",
+  "name": "Gestão do Aponta",
   "version": "1.0.0",
-  "publisher": "seu-publisher-id",
+  "publisher": "sefaz-ceara",
+  "description": "Extensão para gerenciamento de apontamentos em atividades nos projetos de engenharia de software da Sefaz Ceará",
+  "categories": ["Azure Boards"],
+  "contentScriptInjection": {
+    "attributes": {
+      "content-security-policy": "default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: wss:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com https://amcdn.msftauth.net https://js.monitor.azure.com; connect-src 'self' https: wss:; font-src 'self' data: https:"
+    }
+  },
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
     }
   ],
-  "description": "Extensão para gerenciamento de apontamentos de atividades",
-  "categories": ["Azure Boards"],
-  "icons": {
-    "default": "images/logo.png"
-  },
-  "contributions": [
-    {
-      "id": "aponta-hub",
-      "type": "ms.vss-web.hub",
-      "description": "Cadastro de Atividades",
-      "targets": ["ms.vss-work-web.work-hub-group"],
-      "properties": {
-        "name": "Apontamentos",
-        "uri": "dist/index.html"
-      }
-    }
+  "scopes": [
+    "vso.memberentitlementmanagement",
+    "vso.project",
+    "vso.work"
   ],
+  "icons": {
+    "default": "icon.png"
+  },
   "files": [
     {
       "path": "dist",
+      "target": "/",
       "addressable": true
+    },
+    {
+      "path": "public/icons/hub-icon.png",
+      "addressable": true
+    }
+  ],
+  "contributions": [
+    {
+      "id": "aponta-adm-collection-hub",
+      "type": "ms.vss-web.hub",
+      "description": "Gestão do Aponta a nível de Organização.",
+      "targets": ["ms.vss-web.collection-admin-hub-group"],
+      "properties": {
+        "name": "Gestão do Aponta ORG",
+        "uri": "dist/index.html",
+        "iconAsset": "sefaz-ceara.aponta-gestao/public/icons/hub-icon.png",
+        "includesData": {
+          "assets": [
+            "sefaz-ceara.aponta-gestao/public/icons/hub-icon.png"
+          ]
+        }
+      }
+    },
+    {
+      "id": "aponta-adm-project-hub",
+      "type": "ms.vss-web.hub",
+      "description": "Gestão do Aponta a nível de Projetos.",
+      "targets": ["ms.vss-web.project-admin-hub-group"],
+      "properties": {
+        "name": "Gestão do Aponta PROJ",
+        "uri": "dist/index.html",
+        "iconAsset": "sefaz-ceara.aponta-gestao/public/icons/hub-icon.png",
+        "includesData": {
+          "assets": [
+            "sefaz-ceara.aponta-gestao/public/icons/hub-icon.png"
+          ]
+        }
+      }
     }
   ]
 }

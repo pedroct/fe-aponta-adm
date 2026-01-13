@@ -5,7 +5,7 @@ module.exports = {
   mode: 'development',
   entry: './src/index-dev.tsx',
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, '../dist'),
     filename: 'index.js',
     clean: true,
   },

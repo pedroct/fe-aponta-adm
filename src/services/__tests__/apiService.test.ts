@@ -30,6 +30,7 @@ describe('apiService', () => {
       const atividadeResponse: AtividadeResponse = {
         ...novaAtividade,
         id: 'ativ-123',
+        criado_por: 'usuario@example.com',
         criado_em: '2026-01-10T00:00:00Z',
         atualizado_em: '2026-01-10T00:00:00Z',
       };
@@ -80,6 +81,7 @@ describe('apiService', () => {
           descricao: 'Desc 1',
           ativo: true,
           id_projeto: 'proj-1',
+          criado_por: 'usuario@example.com',
           criado_em: '2026-01-10T00:00:00Z',
           atualizado_em: '2026-01-10T00:00:00Z',
         },
@@ -126,8 +128,9 @@ describe('apiService', () => {
       const response: AtividadeResponse = {
         ...atividadeAtualizada,
         id: atividadeId,
+        criado_por: 'usuario@example.com',
         criado_em: '2026-01-10T00:00:00Z',
-        atualizado_em: '2026-01-10T01:00:00Z',
+        atualizado_em: '2026-01-13T12:00:00Z',
       };
 
       (global.fetch as any).mockResolvedValueOnce({

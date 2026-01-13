@@ -42,7 +42,14 @@ import {
 } from 'azure-devops-ui/Dialog';
 
 import 'azure-devops-ui/Core/override.css';
+import * as SDK from 'azure-devops-extension-sdk';
 import { criarAtividade, Atividade, listarProjetos, Projeto, listarAtividades, AtividadeResponse, excluirAtividade, atualizarAtividade } from '../services/apiService';
+
+interface HubContext {
+  mode: 'collection' | 'project';
+  projectId?: string;
+  projectName?: string;
+}
 
 interface IAtividade {
   id: string;
@@ -51,6 +58,7 @@ interface IAtividade {
   nome_projeto: string;
   ativo: boolean;
   id_projeto: string;
+  criado_por: string | null;
 }
 
 export class AtividadesCadastro extends React.Component<{}, {
@@ -67,8 +75,39 @@ export class AtividadesCadastro extends React.Component<{}, {
   dialogAberto: boolean;
   atividadeParaExcluir: IAtividade | null;
   atividadeEmEdicao: string | null;
+  hubMode: 'collection' | 'project';
+  projectNameReadOnly: string | null;
+  projectIdContext: string | null;
+  isLoadingHubContext: boolean;
 }> {
   private projetoSelection = new DropdownSelection();
+  private _isMounted: boolean = false;
+  private rootRef = React.createRef<HTMLDivElement>();
+
+  private safeSetState = (state: Partial<{
+    atividades: IAtividade[];
+    nomeAtividade: string;
+    descricao: string;
+    projetoSelecionado: IListBoxItem | undefined;
+    projetos: IListBoxItem[];
+    isLoading: boolean;
+    isLoadingProjetos: boolean;
+    isLoadingAtividades: boolean;
+    errorMessage: string | null;
+    successMessage: string | null;
+    dialogAberto: boolean;
+    atividadeParaExcluir: IAtividade | null;
+    atividadeEmEdicao: string | null;
+    hubMode: 'collection' | 'project';
+    projectNameReadOnly: string | null;
+    projectIdContext: string | null;
+    isLoadingHubContext: boolean;
+  }>, callback?: () => void) => {
+    if (this._isMounted) {
+      // Types are wide; delegate to React.setState
+      this.setState(state as any, callback);
+    }
+  };
 
   constructor(props: {}) {
     super(props);
@@ -85,24 +124,115 @@ export class AtividadesCadastro extends React.Component<{}, {
       successMessage: null,
       dialogAberto: false,
       atividadeParaExcluir: null,
-      atividadeEmEdicao: null
+      atividadeEmEdicao: null,
+      hubMode: 'collection',
+      projectNameReadOnly: null,
+      projectIdContext: null,
+      isLoadingHubContext: true,
     };
   }
 
   async componentDidMount() {
-    console.log('[AtividadesCadastro] Montado em:', new Date().toISOString());
+    this._isMounted = true;
+    console.log('[AtividadesCadastro] Component montado');
+
+    // Inicializar SDK do Azure DevOps
+    SDK.init({ loaded: false, applyTheme: true });
+
+    SDK.ready()
+      .then(() => {
+        console.log('[AtividadesCadastro] SDK pronto');
+
+        // Detectar modo de hub e carregar dados apropriados
+        return this.detectHubMode();
+      })
+      .then(() => {
+        console.log('[AtividadesCadastro] Inicialização completa');
+
+        try {
+          SDK.notifyLoadSucceeded();
+        } catch (e) {
+          console.warn('[AtividadesCadastro] notifyLoadSucceeded falhou:', e);
+        }
+      })
+      .catch((error) => {
+        console.error('[AtividadesCadastro] Erro durante inicialização:', error);
+
+        this.safeSetState({
+          errorMessage: 'Erro ao inicializar extensão. Verifique sua conexão.',
+          isLoadingHubContext: false,
+        });
+      });
 
     // Observar mudanças na seleção do dropdown
     this.projetoSelection.subscribe(this.onProjetoChange);
+  }
 
-    // Carregar projetos da API primeiro
-    await this.carregarProjetos();
+  private detectHubMode = async (): Promise<void> => {
+    try {
+      console.log('[AtividadesCadastro] Detectando hub mode...');
 
-    // Depois carregar atividades da API (que dependem dos projetos)
-    await this.carregarAtividades();
+      // Obter contexto da página via SDK
+      const pageContext = SDK.getPageContext();
+
+      // Verificar se existe projeto no contexto (project-level hub)
+      // Tenta acessar project via pageContext (estrutura pode variar)
+      const projectInfo = (pageContext as any)?.project || (pageContext as any)?.webContext?.project;
+
+      if (projectInfo && projectInfo.id) {
+        // 🎯 Project Admin Hub
+        console.log('[AtividadesCadastro] Detectado: Project Admin Hub');
+        console.log('[AtividadesCadastro] Projeto:', projectInfo.name);
+
+        this.safeSetState({
+          hubMode: 'project',
+          projectNameReadOnly: projectInfo.name,
+          projectIdContext: projectInfo.id,
+          isLoadingHubContext: false,
+        });
+
+        // Carregar apenas atividades deste projeto
+        await this.loadAtividadesForProject(projectInfo.id);
+      } else {
+        // 🎯 Collection Admin Hub
+        console.log('[AtividadesCadastro] Detectado: Collection Admin Hub');
+
+        this.safeSetState({
+          hubMode: 'collection',
+          projectNameReadOnly: null,
+          projectIdContext: null,
+          isLoadingHubContext: false,
+        });
+
+        // Carregar todos os projetos e atividades
+        await this.carregarProjetos();
+        await this.carregarAtividades();
+      }
+    } catch (error) {
+      console.error('[AtividadesCadastro] Erro ao detectar hub mode:', error);
+
+      this.safeSetState({
+        hubMode: 'collection', // Fallback
+        isLoadingHubContext: false,
+        errorMessage: 'Erro ao inicializar interface. Tente recarregar a página.',
+      });
+    }
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
+    // If the component is unmounting while an element inside it still has focus,
+    // blur it to avoid accessibility warnings like "aria-hidden on a focused element".
+    try {
+      const root = this.rootRef.current;
+      const active = document && (document.activeElement as HTMLElement | null);
+      if (root && active && root.contains(active)) {
+        active.blur();
+      }
+    } catch (e) {
+      // ignore DOM access errors in non-browser environments
+    }
+
     this.projetoSelection.unsubscribe(this.onProjetoChange);
   }
 
@@ -119,7 +249,7 @@ export class AtividadesCadastro extends React.Component<{}, {
   };
 
   private carregarProjetos = async () => {
-    this.setState({ isLoadingProjetos: true });
+    this.safeSetState({ isLoadingProjetos: true });
 
     try {
       const projetosData = await listarProjetos();
@@ -130,12 +260,12 @@ export class AtividadesCadastro extends React.Component<{}, {
         text: projeto.nome
       }));
 
-      this.setState({
+      this.safeSetState({
         projetos: projetosDropdown,
         isLoadingProjetos: false
       });
     } catch (error) {
-      this.setState({
+      this.safeSetState({
         isLoadingProjetos: false,
         errorMessage: error instanceof Error ? error.message : 'Erro ao carregar projetos'
       });
@@ -143,7 +273,7 @@ export class AtividadesCadastro extends React.Component<{}, {
   };
 
   private carregarAtividades = async () => {
-    this.setState({ isLoadingAtividades: true });
+    this.safeSetState({ isLoadingAtividades: true });
 
     try {
       console.log('Carregando atividades da API...');
@@ -169,20 +299,64 @@ export class AtividadesCadastro extends React.Component<{}, {
         descricao: atividade.descricao,
         nome_projeto: atividade.nome_projeto || 'Projeto não encontrado',
         ativo: atividade.ativo,
-        id_projeto: atividade.id_projeto
+        id_projeto: atividade.id_projeto,
+        criado_por: atividade.criado_por
       }));
 
       console.log('Atividades processadas:', atividadesTabela);
 
-      this.setState({
+      this.safeSetState({
         atividades: atividadesTabela,
         isLoadingAtividades: false
       });
     } catch (error) {
       console.error('Erro ao carregar atividades:', error);
-      this.setState({
+      this.safeSetState({
         isLoadingAtividades: false,
         errorMessage: error instanceof Error ? error.message : 'Erro ao carregar atividades'
+      });
+    }
+  };
+
+  private loadAtividadesForProject = async (projectId: string): Promise<void> => {
+    this.safeSetState({ isLoadingAtividades: true, errorMessage: null });
+
+    try {
+      console.log('[AtividadesCadastro] Carregando atividades do projeto:', projectId);
+
+      // Carregar todas as atividades
+      const allAtividades = await listarAtividades();
+
+      // Filtrar apenas as do projeto atual
+      const filteredAtividades = allAtividades.filter(
+        (atividade) => atividade.id_projeto === projectId
+      );
+
+      console.log('[AtividadesCadastro] Total de atividades:', allAtividades.length);
+      console.log('[AtividadesCadastro] Atividades do projeto:', filteredAtividades.length);
+
+      // Converter para o formato da tabela
+      const atividadesTabela: IAtividade[] = filteredAtividades.map(atividade => ({
+        id: atividade.id,
+        nome: atividade.nome,
+        descricao: atividade.descricao,
+        nome_projeto: atividade.nome_projeto || 'Projeto não encontrado',
+        ativo: atividade.ativo,
+        id_projeto: atividade.id_projeto,
+        criado_por: atividade.criado_por
+      }));
+
+      this.safeSetState({
+        atividades: atividadesTabela,
+        isLoadingAtividades: false,
+      });
+    } catch (error: any) {
+      console.error('[AtividadesCadastro] Erro ao carregar atividades:', error);
+
+      this.safeSetState({
+        errorMessage: error.message || 'Erro ao carregar atividades',
+        atividades: [],
+        isLoadingAtividades: false,
       });
     }
   };
@@ -196,18 +370,45 @@ export class AtividadesCadastro extends React.Component<{}, {
   };
 
   private adicionarAtividade = async () => {
-    const { nomeAtividade, descricao, projetoSelecionado, atividadeEmEdicao } = this.state;
+    const { nomeAtividade, descricao, projetoSelecionado, atividadeEmEdicao, hubMode, projectIdContext } = this.state;
 
-    if (!nomeAtividade.trim() || !projetoSelecionado) {
-      this.setState({
-        errorMessage: 'Por favor, preencha todos os campos obrigatórios',
-        successMessage: null
-      });
+    // Validação: Nome é obrigatório
+    if (!nomeAtividade.trim()) {
+      this.safeSetState({ errorMessage: 'Nome da atividade é obrigatório' });
+      return;
+    }
+
+    // Validação: Descrição obrigatória
+    if (!descricao.trim()) {
+      this.safeSetState({ errorMessage: 'Descrição é obrigatória' });
+      return;
+    }
+
+    // Determinar ID do projeto baseado no hub mode
+    let projectId: string | null = null;
+
+    if (hubMode === 'project') {
+      // 🎯 Project Hub: Usar projeto do contexto
+      projectId = projectIdContext;
+      console.log('[AtividadesCadastro] Project Hub - Usando projeto do contexto:', projectId);
+    } else {
+      // 🎯 Collection Hub: Usar projeto selecionado no dropdown
+      if (!projetoSelecionado) {
+        this.safeSetState({ errorMessage: 'Selecione um projeto' });
+        return;
+      }
+      projectId = projetoSelecionado.id as string;
+      console.log('[AtividadesCadastro] Collection Hub - Usando projeto do dropdown:', projectId);
+    }
+
+    // Validação final
+    if (!projectId) {
+      this.safeSetState({ errorMessage: 'Erro: projeto não identificado' });
       return;
     }
 
     // Limpar mensagens anteriores
-    this.setState({
+    this.safeSetState({
       isLoading: true,
       errorMessage: null,
       successMessage: null
@@ -219,7 +420,7 @@ export class AtividadesCadastro extends React.Component<{}, {
         nome: nomeAtividade,
         descricao: descricao || '',
         ativo: true,
-        id_projeto: projetoSelecionado.id as string
+        id_projeto: projectId
       };
 
       if (atividadeEmEdicao) {
@@ -231,12 +432,13 @@ export class AtividadesCadastro extends React.Component<{}, {
           id: response.id,
           nome: response.nome,
           descricao: response.descricao,
-          nome_projeto: response.nome_projeto || projetoSelecionado.text || '',
+          nome_projeto: response.nome_projeto || (projetoSelecionado?.text || ''),
           ativo: response.ativo,
-          id_projeto: response.id_projeto
+          id_projeto: response.id_projeto,
+          criado_por: response.criado_por
         };
 
-        this.setState({
+        this.safeSetState({
           atividades: this.state.atividades.map(a =>
             a.id === atividadeEmEdicao ? atividadeAtualizada : a
           ),
@@ -256,12 +458,13 @@ export class AtividadesCadastro extends React.Component<{}, {
           id: response.id,
           nome: response.nome,
           descricao: response.descricao,
-          nome_projeto: response.nome_projeto || projetoSelecionado.text || '',
+          nome_projeto: response.nome_projeto || (projetoSelecionado?.text || ''),
           ativo: response.ativo,
-          id_projeto: response.id_projeto
+          id_projeto: response.id_projeto,
+          criado_por: response.criado_por
         };
 
-        this.setState({
+        this.safeSetState({
           atividades: [...this.state.atividades, novaAtividade],
           nomeAtividade: '',
           descricao: '',
@@ -271,16 +474,18 @@ export class AtividadesCadastro extends React.Component<{}, {
         });
       }
 
-      // Limpar seleção do dropdown
-      this.projetoSelection.clear();
+      // Limpar seleção do dropdown (apenas em Collection Hub)
+      if (hubMode === 'collection') {
+        this.projetoSelection.clear();
+      }
 
       // Limpar mensagem de sucesso após 3 segundos
       setTimeout(() => {
-        this.setState({ successMessage: null });
+        this.safeSetState({ successMessage: null });
       }, 3000);
 
     } catch (error) {
-      this.setState({
+      this.safeSetState({
         isLoading: false,
         errorMessage: error instanceof Error ? error.message : 'Erro ao ' + (atividadeEmEdicao ? 'atualizar' : 'criar') + ' atividade'
       });
@@ -322,18 +527,18 @@ export class AtividadesCadastro extends React.Component<{}, {
       await excluirAtividade(atividadeParaExcluir.id);
 
       // Remover da lista local após sucesso
-      this.setState({
+      this.safeSetState({
         atividades: this.state.atividades.filter(a => a.id !== atividadeParaExcluir.id),
         successMessage: 'Atividade removida com sucesso!'
       });
 
       // Limpar mensagem de sucesso após 3 segundos
       setTimeout(() => {
-        this.setState({ successMessage: null });
+        this.safeSetState({ successMessage: null });
       }, 3000);
 
     } catch (error) {
-      this.setState({
+      this.safeSetState({
         errorMessage: error instanceof Error ? error.message : 'Erro ao excluir atividade'
       });
     }
@@ -438,6 +643,27 @@ export class AtividadesCadastro extends React.Component<{}, {
     );
   };
 
+  private renderCriadoPorCell = (
+    rowIndex: number,
+    columnIndex: number,
+    tableColumn: ITableColumn<IAtividade>,
+    atividade: IAtividade
+  ): JSX.Element => {
+    return (
+      <SimpleTableCell
+        columnIndex={columnIndex}
+        tableColumn={tableColumn}
+        key={`col-${columnIndex}`}
+      >
+        <div className="flex-row scroll-hidden">
+          <span className="text-ellipsis" title={atividade.criado_por || 'N/A'}>
+            {atividade.criado_por ? atividade.criado_por.split('@')[0] : 'N/A'}
+          </span>
+        </div>
+      </SimpleTableCell>
+    );
+  };
+
   private renderAtivoCell = (
     rowIndex: number,
     columnIndex: number,
@@ -492,6 +718,50 @@ export class AtividadesCadastro extends React.Component<{}, {
     );
   };
 
+  private renderProjetoSection = (): React.ReactNode => {
+    const { hubMode, projectNameReadOnly, projetos, isLoadingProjetos, projetoSelecionado } = this.state;
+
+    if (hubMode === 'project' && projectNameReadOnly) {
+      // 🎯 Project Hub: Mostrar como read-only
+      return (
+        <div className="projeto-section read-only" style={{ marginBottom: '16px' }}>
+          <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+            Projeto
+          </label>
+          <TextField
+            value={projectNameReadOnly}
+            readOnly={true}
+            placeholder="Projeto"
+            width={TextFieldWidth.auto}
+          />
+          <small style={{ display: 'block', marginTop: '8px', color: '#666' }}>
+            ℹ️ Você pode gerenciar atividades apenas para este projeto.
+          </small>
+        </div>
+      );
+    }
+
+    // 🎯 Collection Hub: Dropdown normal
+    return (
+      <div className="projeto-section" style={{ marginBottom: '16px' }}>
+        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+          Projeto *
+        </label>
+        <Dropdown
+          items={projetos}
+          selection={this.projetoSelection}
+          disabled={isLoadingProjetos || projetos.length === 0}
+          placeholder="Selecione um projeto"
+        />
+        {projetos.length === 0 && !isLoadingProjetos && (
+          <small style={{ display: 'block', marginTop: '8px', color: '#d32f2f' }}>
+            ⚠️ Nenhum projeto disponível.
+          </small>
+        )}
+      </div>
+    );
+  };
+
   render() {
     const { atividades, nomeAtividade, descricao, projetos, isLoading, isLoadingProjetos, isLoadingAtividades, errorMessage, successMessage, dialogAberto, atividadeParaExcluir, atividadeEmEdicao } = this.state;
 
@@ -511,8 +781,14 @@ export class AtividadesCadastro extends React.Component<{}, {
       {
         id: 'descricao',
         name: 'Descrição',
-        width: new ObservableValue(-30),
+        width: new ObservableValue(-20),
         renderCell: this.renderDescricaoCell
+      },
+      {
+        id: 'criado_por',
+        name: 'Criado por',
+        width: new ObservableValue(-15),
+        renderCell: this.renderCriadoPorCell
       },
       {
         id: 'ativo',
@@ -523,13 +799,13 @@ export class AtividadesCadastro extends React.Component<{}, {
       {
         id: 'acoes',
         name: 'Ações',
-        width: new ObservableValue(-10),
+        width: new ObservableValue(-5),
         renderCell: this.renderAcoesCell
       }
     ];
 
     return (
-      <div className="page-content page-content-top flex-column rhythm-vertical-16">
+      <div ref={this.rootRef} className="page-content page-content-top flex-column rhythm-vertical-16">
         <Card
           className="flex-grow bolt-card-no-vertical-padding"
           titleProps={{ text: 'Gestão de Atividades' }}
@@ -558,60 +834,44 @@ export class AtividadesCadastro extends React.Component<{}, {
             )}
 
             {/* Formulário de Cadastro */}
-            <div className="flex-column" style={{ marginBottom: '16px', gap: '12px' }}>
-              <div className="flex-row rhythm-horizontal-8">
-                <div style={{ flex: '1' }}>
-                  <TextField
-                    value={nomeAtividade}
-                    onChange={this.onNomeAtividadeChange}
-                    placeholder="Digite o nome da atividade *"
-                    width={TextFieldWidth.standard}
-                    ariaLabel="Nome da atividade"
-                    disabled={isLoading}
-                  />
-                </div>
-                <div style={{ flex: '1' }}>
-                  <Dropdown
-                    ariaLabel="Selecione um projeto"
-                    placeholder={isLoadingProjetos ? "Carregando projetos..." : "Selecione um projeto *"}
-                    items={projetos}
-                    selection={this.projetoSelection}
-                    onSelect={(event, item) => {
-                      this.setState({ projetoSelecionado: item });
-                    }}
-                    disabled={isLoading || isLoadingProjetos}
-                  />
-                </div>
+            {this.renderProjetoSection()}
+
+            <div className="flex-row rhythm-horizontal-8" style={{ marginBottom: '16px', alignItems: 'flex-start' }}>
+              <div style={{ flex: '2', minWidth: '200px' }}>
+                <TextField
+                  value={nomeAtividade}
+                  onChange={this.onNomeAtividadeChange}
+                  placeholder="Digite o nome da atividade *"
+                  width={TextFieldWidth.standard}
+                  ariaLabel="Nome da atividade"
+                  disabled={isLoading}
+                />
               </div>
-              <div className="flex-row rhythm-horizontal-8">
-                <div style={{ flex: '1' }}>
-                  <TextField
-                    value={descricao}
-                    onChange={this.onDescricaoChange}
-                    placeholder="Digite uma descrição (opcional)"
-                    width={TextFieldWidth.standard}
-                    ariaLabel="Descrição da atividade"
-                    multiline={true}
-                    rows={2}
-                    disabled={isLoading}
-                  />
-                </div>
-                <div style={{ flex: '0 0 auto', alignSelf: 'flex-start', display: 'flex', gap: '8px' }}>
+              <div style={{ flex: '2', minWidth: '200px' }}>
+                <TextField
+                  value={descricao}
+                  onChange={this.onDescricaoChange}
+                  placeholder="Digite uma descrição (opcional)"
+                  width={TextFieldWidth.standard}
+                  ariaLabel="Descrição da atividade"
+                  disabled={isLoading}
+                />
+              </div>
+              <div style={{ flex: '0 0 auto', display: 'flex', gap: '8px' }}>
+                <Button
+                  text={isLoading ? "Salvando..." : (atividadeEmEdicao ? "Atualizar" : "Adicionar")}
+                  primary={true}
+                  onClick={this.adicionarAtividade}
+                  iconProps={{ iconName: isLoading ? 'Sync' : (atividadeEmEdicao ? 'Save' : 'Add') }}
+                  disabled={isLoading}
+                />
+                {atividadeEmEdicao && (
                   <Button
-                    text={isLoading ? "Salvando..." : (atividadeEmEdicao ? "Atualizar" : "Adicionar")}
-                    primary={true}
-                    onClick={this.adicionarAtividade}
-                    iconProps={{ iconName: isLoading ? 'Sync' : (atividadeEmEdicao ? 'Save' : 'Add') }}
+                    text="Cancelar"
+                    onClick={this.cancelarEdicao}
                     disabled={isLoading}
                   />
-                  {atividadeEmEdicao && (
-                    <Button
-                      text="Cancelar"
-                      onClick={this.cancelarEdicao}
-                      disabled={isLoading}
-                    />
-                  )}
-                </div>
+                )}
               </div>
             </div>
 
@@ -653,7 +913,7 @@ export class AtividadesCadastro extends React.Component<{}, {
                   <Icon iconName="Add" size={IconSize.large} style={{ marginBottom: '8px', opacity: 0.3 }} />
                   <p>Nenhuma atividade cadastrada. Adicione sua primeira atividade acima.</p>
                   <p style={{ fontSize: '12px', marginTop: '8px' }}>
-                    Projetos carregados: {projetos.length} | API: {process.env.API_BASE_URL || 'http://localhost:8000'}
+                    Projetos carregados: {projetos.length}
                   </p>
                 </div>
               </div>

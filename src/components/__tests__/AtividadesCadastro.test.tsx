@@ -5,6 +5,19 @@ import userEvent from '@testing-library/user-event';
 import { AtividadesCadastro } from '../AtividadesCadastro';
 import * as apiService from '../../services/apiService';
 
+// Mock do SDK da Azure DevOps
+vi.mock('azure-devops-extension-sdk', () => ({
+  init: vi.fn(),
+  ready: vi.fn().mockResolvedValue(undefined),
+  getPageContext: vi.fn().mockReturnValue({
+    project: null,
+    organization: { name: 'Sefaz Ceará' },
+    user: { name: 'Test User' },
+  }),
+  getAccessToken: vi.fn().mockResolvedValue('test-token'),
+  notifyLoadSucceeded: vi.fn(),
+}));
+
 // Mock do apiService
 vi.mock('../../services/apiService', () => ({
   criarAtividade: vi.fn(),
@@ -37,6 +50,7 @@ describe('AtividadesCadastro', () => {
       ativo: true,
       id_projeto: 'proj-1',
       nome_projeto: 'Projeto Teste',
+      criado_por: 'usuario@example.com',
       criado_em: '2026-01-10T00:00:00Z',
       atualizado_em: '2026-01-10T00:00:00Z',
     },
@@ -126,7 +140,7 @@ describe('AtividadesCadastro', () => {
     await userEvent.click(addButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/preencha todos os campos obrigatórios/i)).toBeInTheDocument();
+      expect(screen.getByText(/Nome da atividade é obrigatório/i)).toBeInTheDocument();
     });
 
     expect(apiService.criarAtividade).not.toHaveBeenCalled();
@@ -140,6 +154,7 @@ describe('AtividadesCadastro', () => {
       ativo: true,
       id_projeto: 'proj-1',
       nome_projeto: 'Projeto Teste',
+      criado_por: 'usuario@example.com',
       criado_em: '2026-01-10T00:00:00Z',
       atualizado_em: '2026-01-10T00:00:00Z',
     };

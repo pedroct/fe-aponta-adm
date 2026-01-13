@@ -7,14 +7,23 @@ const Dotenv = require('dotenv-webpack');
 const isDev = process.env.DEV_MODE === 'true';
 
 module.exports = {
+  mode: isDev ? 'development' : 'production',
   entry: isDev ? './src/index-dev.tsx' : './src/index.tsx',
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, '../dist'),
     filename: 'index.js',
     clean: true,
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    fallback: {
+      process: false,
+    }
+  },
+  optimization: {
+    minimize: !isDev,
+    usedExports: true,
+    sideEffects: false,
   },
   module: {
     rules: [
@@ -34,6 +43,11 @@ module.exports = {
       template: './public/dev.html',
       filename: 'index.html',
     }),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'public/favicon.ico', to: '.' }
+      ],
+    }),
     new Dotenv({
       path: './.env',
       safe: false,
@@ -45,20 +59,15 @@ module.exports = {
         { from: 'public', to: '.' }
       ],
     }),
-    new Dotenv({
-      path: './.env',
-      safe: false,
-      systemvars: true,
-    }),
   ],
   externals: {
     'react': 'React',
     'react-dom': 'ReactDOM'
   },
-  devtool: 'source-map',
+  devtool: isDev ? 'source-map' : false,
   devServer: {
     static: {
-      directory: path.join(__dirname, 'dist'),
+      directory: path.join(__dirname, '../dist'),
     },
     compress: true,
     port: 3000,
