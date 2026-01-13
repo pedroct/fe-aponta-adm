@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as SDK from 'azure-devops-extension-sdk';
-import { AtividadesCadastro } from './components/AtividadesCadastro';
+import { GerirAtividade } from './components/GerirAtividade';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { setAzureDevOpsToken } from './services/apiService';
 
@@ -25,7 +25,7 @@ function AppWithAuth() {
     // Continuar mesmo com erro de autenticação
   }
 
-  return <AtividadesCadastro />;
+  return <GerirAtividade />;
 }
 
 // Função para renderizar a aplicação
