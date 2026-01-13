@@ -42,6 +42,7 @@ import {
 } from 'azure-devops-ui/Dialog';
 
 import 'azure-devops-ui/Core/override.css';
+import '../styles/atividades.css';
 import * as SDK from 'azure-devops-extension-sdk';
 import { criarAtividade, Atividade, listarProjetos, Projeto, listarAtividades, AtividadeResponse, excluirAtividade, atualizarAtividade } from '../services/apiService';
 
