@@ -838,14 +838,6 @@ export class AtividadesCadastro extends React.Component<{}, {
                 {errorMessage}
               </MessageCard>
             )}
-            {successMessage && (
-              <MessageCard
-                severity={MessageCardSeverity.Success}
-                onDismiss={() => this.safeSetState({ successMessage: null })}
-              >
-                {successMessage}
-              </MessageCard>
-            )}
 
             {/* Form Card */}
             <Card className="form-card">
