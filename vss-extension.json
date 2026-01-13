@@ -44,12 +44,7 @@
       "properties": {
         "name": "Gestão do Aponta ORG",
         "uri": "dist/index.html",
-        "iconAsset": "sefaz-ceara.aponta-gestao/public/icons/hub-icon.png",
-        "includesData": {
-          "assets": [
-            "sefaz-ceara.aponta-gestao/public/icons/hub-icon.png"
-          ]
-        }
+        "icon": "ms-Icon--CheckList"
       }
     },
     {
@@ -60,12 +55,7 @@
       "properties": {
         "name": "Gestão do Aponta PROJ",
         "uri": "dist/index.html",
-        "iconAsset": "sefaz-ceara.aponta-gestao/public/icons/hub-icon.png",
-        "includesData": {
-          "assets": [
-            "sefaz-ceara.aponta-gestao/public/icons/hub-icon.png"
-          ]
-        }
+        "icon": "ms-Icon--CheckList"
       }
     }
   ]
