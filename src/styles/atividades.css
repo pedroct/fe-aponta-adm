@@ -37,13 +37,14 @@
   align-items: flex-end;
   margin-bottom: 20px;
   flex-wrap: wrap;
+  width: 100%;
 }
 
-/* Campo Projeto - um pouco maior */
+/* Campo Projeto - tamanho compacto */
 .form-field-projeto {
-  flex: 1 1 180px;
+  flex: 0 0 auto;
   min-width: 160px;
-  max-width: 220px;
+  width: 180px;
 }
 
 .form-field-projeto label {
@@ -58,10 +59,11 @@
   width: 100%;
 }
 
-/* Campos padrão - Nome e Descrição */
+/* Campos padrão - Nome e Descrição - tamanho fixo */
 .form-field-standard {
-  flex: 1 1 200px;
-  min-width: 180px;
+  flex: 0 0 auto;
+  width: 220px;
+  min-width: 200px;
 }
 
 .form-field-standard label {
