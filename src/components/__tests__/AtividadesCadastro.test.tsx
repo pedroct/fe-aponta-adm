@@ -168,7 +168,7 @@ describe('AtividadesCadastro', () => {
     });
 
     // Preencher o formulário
-    const nomeInput = screen.getByPlaceholderText(/Digite o nome da atividade/i);
+    const nomeInput = screen.getByPlaceholderText(/Digite o nome/i);
     await userEvent.type(nomeInput, 'Nova Atividade');
 
     const descricaoInput = screen.getByPlaceholderText(/Digite uma descrição/i);

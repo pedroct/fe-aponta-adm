@@ -834,45 +834,75 @@ export class AtividadesCadastro extends React.Component<{}, {
               </div>
             )}
 
-            {/* Formulário de Cadastro */}
-            {this.renderProjetoSection()}
+            {/* Formulário de Cadastro - Tudo em uma linha */}
+            <div className="form-row-unified">
+              {/* Campo Projeto */}
+              <div className="form-field-projeto">
+                <label htmlFor="projeto-dropdown" style={{ display: 'block', marginBottom: '4px', fontWeight: 500 }}>
+                  Projeto *
+                </label>
+                <Dropdown
+                  items={projetos}
+                  selection={this.projetoSelection}
+                  disabled={isLoadingProjetos || projetos.length === 0}
+                  placeholder="Selecione um projeto"
+                />
+                {projetos.length === 0 && !isLoadingProjetos && (
+                  <small style={{ display: 'block', marginTop: '4px', color: '#d32f2f', fontSize: '11px' }}>
+                    ⚠️ Nenhum projeto
+                  </small>
+                )}
+              </div>
 
-            <div className="flex-row rhythm-horizontal-8" style={{ marginBottom: '16px', alignItems: 'flex-start' }}>
-              <div style={{ flex: '2', minWidth: '200px' }}>
+              {/* Campo Nome */}
+              <div className="form-field-standard">
+                <label style={{ display: 'block', marginBottom: '4px', fontWeight: 500 }}>
+                  Nome *
+                </label>
                 <TextField
                   value={nomeAtividade}
                   onChange={this.onNomeAtividadeChange}
-                  placeholder="Digite o nome da atividade *"
+                  placeholder="Digite o nome"
                   width={TextFieldWidth.standard}
                   ariaLabel="Nome da atividade"
                   disabled={isLoading}
                 />
               </div>
-              <div style={{ flex: '2', minWidth: '200px' }}>
+
+              {/* Campo Descrição */}
+              <div className="form-field-standard">
+                <label style={{ display: 'block', marginBottom: '4px', fontWeight: 500 }}>
+                  Descrição
+                </label>
                 <TextField
                   value={descricao}
                   onChange={this.onDescricaoChange}
-                  placeholder="Digite uma descrição (opcional)"
+                  placeholder="Digite uma descrição"
                   width={TextFieldWidth.standard}
                   ariaLabel="Descrição da atividade"
                   disabled={isLoading}
                 />
               </div>
-              <div style={{ flex: '0 0 auto', display: 'flex', gap: '8px' }}>
-                <Button
-                  text={isLoading ? "Salvando..." : (atividadeEmEdicao ? "Atualizar" : "Adicionar")}
-                  primary={true}
-                  onClick={this.adicionarAtividade}
-                  iconProps={{ iconName: isLoading ? 'Sync' : (atividadeEmEdicao ? 'Save' : 'Add') }}
-                  disabled={isLoading}
-                />
-                {atividadeEmEdicao && (
+
+              {/* Botão Adicionar/Atualizar */}
+              <div className="form-field-button">
+                <div style={{ height: '24px' }}></div>
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
                   <Button
-                    text="Cancelar"
-                    onClick={this.cancelarEdicao}
+                    text={isLoading ? "Salvando..." : (atividadeEmEdicao ? "Atualizar" : "Adicionar")}
+                    primary={true}
+                    onClick={this.adicionarAtividade}
+                    iconProps={{ iconName: isLoading ? 'Sync' : (atividadeEmEdicao ? 'Save' : 'Add') }}
                     disabled={isLoading}
                   />
-                )}
+                  {atividadeEmEdicao && (
+                    <Button
+                      text="Cancelar"
+                      onClick={this.cancelarEdicao}
+                      disabled={isLoading}
+                    />
+                  )}
+                </div>
               </div>
             </div>
 

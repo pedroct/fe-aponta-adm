@@ -28,6 +28,71 @@
   overflow-x: hidden;
 }
 
+/* ==================== FORMULÁRIO UNIFICADO ==================== */
+
+/* Container da linha do formulário - todos os 4 elementos */
+.form-row-unified {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+/* Campo Projeto - um pouco maior */
+.form-field-projeto {
+  flex: 1 1 180px;
+  min-width: 160px;
+  max-width: 220px;
+}
+
+.form-field-projeto label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 500;
+  font-size: 13px;
+  color: #333;
+}
+
+.form-field-projeto .dropdown {
+  width: 100%;
+}
+
+/* Campos padrão - Nome e Descrição */
+.form-field-standard {
+  flex: 1 1 200px;
+  min-width: 180px;
+}
+
+.form-field-standard label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 500;
+  font-size: 13px;
+  color: #333;
+}
+
+.form-field-standard input[type="text"],
+.form-field-standard .textfield {
+  width: 100%;
+}
+
+/* Campo do botão */
+.form-field-button {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-width: fit-content;
+}
+
+.form-field-button > div:last-child {
+  display: flex;
+  gap: 8px;
+}
+
+/* ==================== ESTILOS DE TABELA ==================== */
+
 /* Tabela com scroll adequado */
 .h-scroll-auto {
   max-height: 500px;
@@ -46,6 +111,73 @@
 
 .rhythm-vertical-16 > * + * {
   margin-top: 16px;
+}
+
+/* ==================== MENSAGENS E FEEDBACK ==================== */
+
+/* Container de mensagens */
+.message-container {
+  margin-bottom: 16px;
+}
+
+/* Loading animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-icon {
+  animation: spin 2s linear infinite;
+}
+
+/* ==================== EMPTY STATE ==================== */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  color: #999;
+  text-align: center;
+  min-height: 300px;
+}
+
+.empty-state-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+/* ==================== RESPONSIVIDADE ==================== */
+
+/* Em dispositivos pequenos (celulares) */
+@media (max-width: 768px) {
+  .form-row-unified {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .form-field-projeto,
+  .form-field-standard,
+  .form-field-button {
+    flex: 1 1 100%;
+    min-width: 100%;
+    max-width: 100%;
+  }
+
+  .form-field-button > div:last-child {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .h-scroll-auto {
+    max-height: 400px;
+  }
 }
 
 .rhythm-horizontal-8 > * + * {
