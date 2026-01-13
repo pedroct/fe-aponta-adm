@@ -225,7 +225,12 @@ export class GerirAtividade extends React.Component<{}, IGerirAtividadeState> {
         text: 'Adicionar',
         iconProps: { iconName: 'Add' },
         onClick: this.adicionarAtividade,
-        ariaLabel: 'Adicionar nova atividade'
+        ariaLabel: 'Adicionar nova atividade',
+        style: {
+          backgroundColor: '#0078d4',
+          color: '#ffffff',
+          border: 'none'
+        }
       }
     ];
 
@@ -307,6 +312,8 @@ export class GerirAtividade extends React.Component<{}, IGerirAtividadeState> {
                   itemProvider={new ArrayItemProvider(atividades)}
                   role="table"
                   containerClassName="table-container"
+                  showHeader={true}
+                  showLines={true}
                 />
               </div>
             </div>

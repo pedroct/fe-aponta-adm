@@ -4,23 +4,24 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #fafbfc;
+  background-color: #f6f6f6;
 }
 
 /* Page Content - abaixo do Header */
 .page-content {
   flex: 1;
-  padding: 16px 0;
-  background-color: #fafbfc;
+  padding: 16px;
+  background-color: #f6f6f6;
 }
 
 /* Card Styles - seguindo padrão Azure DevOps */
 .form-card,
 .table-card {
   background-color: #ffffff;
-  border: 1px solid #d3d3d3;
+  border: 1px solid #e5e5e5;
   border-radius: 2px;
-  margin: 0 16px 16px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 .form-content {
@@ -30,18 +31,20 @@
 }
 
 .table-content {
-  padding: 16px;
+  padding: 0;
   display: flex;
   flex-direction: column;
 }
 
-/* Títulos dos Cards */
+/* Títulos dos Cards - title-s: semibold, 17px */
 .form-title,
 .table-title {
-  margin: 0 0 16px 0;
-  font-size: 15px;
+  margin: 16px 16px 16px 16px;
+  font-size: 17px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: rgba(0, 0, 0, 0.9);
+  line-height: 1.5;
+  padding: 0;
 }
 
 /* Form Grid - 3 colunas */
@@ -60,38 +63,82 @@
 
 .form-label {
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   font-weight: 500;
-  color: #333333;
+  color: rgba(0, 0, 0, 0.55);
   font-size: 13px;
+  line-height: 1.5;
 }
 
 /* Info text */
 .form-info {
   font-size: 12px;
-  color: #666666;
-  margin-top: 8px;
+  color: rgba(0, 0, 0, 0.55);
+  margin-top: 12px;
 }
 
-/* Table Styles */
+/* Table Styles - padrão Azure DevOps */
 .table-wrapper {
   overflow-x: auto;
-  margin-top: 12px;
 }
 
 .table-container {
   min-width: 100%;
+  display: table;
+}
+
+/* Estilo padrão de tabelas Azure DevOps */
+:global .bolt-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+:global .bolt-table > thead {
+  background-color: #f6f6f6;
+  height: 40px;
+}
+
+:global .bolt-table > thead > tr > th {
+  padding: 0 12px;
+  border-bottom: 1px solid #e5e5e5;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.9);
+  text-align: left;
+  user-select: none;
+}
+
+:global .bolt-table > tbody > tr {
+  height: 40px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+:global .bolt-table > tbody > tr:hover {
+  background-color: #f6f6f6;
+}
+
+:global .bolt-table > tbody > tr > td {
+  padding: 0 12px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.9);
+  vertical-align: middle;
+}
+
+/* Action buttons in table */
+:global .bolt-table > tbody > tr > td .ms-Button {
+  margin: 0 4px;
+  padding: 4px 8px;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .page-content {
-    padding: 12px 0;
+    padding: 12px;
   }
 
   .form-card,
   .table-card {
-    margin: 0 12px 12px 12px;
+    margin-bottom: 12px;
   }
 
   .form-row {
@@ -107,6 +154,21 @@
   .form-title,
   .table-title {
     font-size: 14px;
-    margin-bottom: 12px;
+    margin: 12px 0 12px 0;
+  }
+
+  :global .bolt-table > thead {
+    display: none;
+  }
+
+  :global .bolt-table > tbody > tr {
+    display: block;
+    margin-bottom: 16px;
+  }
+
+  :global .bolt-table > tbody > tr > td {
+    display: block;
+    padding: 8px 12px;
+    border: none;
   }
 }
