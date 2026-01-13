@@ -40,9 +40,16 @@ import {
 import {
   Dialog
 } from 'azure-devops-ui/Dialog';
+import {
+  Header,
+  TitleSize
+} from 'azure-devops-ui/Header';
+import {
+  Page
+} from 'azure-devops-ui/Page';
 
 import 'azure-devops-ui/Core/override.css';
-import '../styles/atividades.css';
+import '../styles/atividades-refactored.css';
 import * as SDK from 'azure-devops-extension-sdk';
 import { criarAtividade, Atividade, listarProjetos, Projeto, listarAtividades, AtividadeResponse, excluirAtividade, atualizarAtividade } from '../services/apiService';
 
@@ -805,108 +812,150 @@ export class AtividadesCadastro extends React.Component<{}, {
       }
     ];
 
+    const commandBarItems = [
+      {
+        id: 'btn-adicionar',
+        text: 'Adicionar',
+        iconProps: { iconName: 'Add' },
+        onClick: this.adicionarAtividade,
+        important: true,
+      }
+    ];
+
     return (
-      <div ref={this.rootRef} className="page-content page-content-top flex-column rhythm-vertical-16">
-        <Card
-          className="flex-grow bolt-card-no-vertical-padding"
-          titleProps={{ text: 'Gestão de Atividades' }}
-        >
-          <div className="flex-column" style={{ padding: '16px' }}>
-            {/* Mensagens de Erro e Sucesso */}
-            {(errorMessage || successMessage) && (
-              <div style={{ marginBottom: '20px' }}>
-                {errorMessage && (
-                  <MessageCard
-                    severity={MessageCardSeverity.Error}
-                    onDismiss={() => this.setState({ errorMessage: null })}
-                  >
-                    {errorMessage}
-                  </MessageCard>
-                )}
-                {successMessage && (
-                  <MessageCard
-                    severity={MessageCardSeverity.Info}
-                    onDismiss={() => this.setState({ successMessage: null })}
-                  >
-                    {successMessage}
-                  </MessageCard>
-                )}
-              </div>
+      <div ref={this.rootRef} className="atividades-cadastro-container">
+        <Page>
+          <Header
+            title="Gestão de Atividades"
+            titleSize={TitleSize.Large}
+            commandBarItems={commandBarItems}
+            separator={true}
+          />
+
+          <div className="page-content-wrapper">
+            {/* Messages */}
+            {errorMessage && (
+              <MessageCard
+                severity={MessageCardSeverity.Error}
+                onDismiss={() => this.safeSetState({ errorMessage: null })}
+              >
+                {errorMessage}
+              </MessageCard>
+            )}
+            {successMessage && (
+              <MessageCard
+                severity={MessageCardSeverity.Success}
+                onDismiss={() => this.safeSetState({ successMessage: null })}
+              >
+                {successMessage}
+              </MessageCard>
             )}
 
-            {/* Formulário de Cadastro - Tudo em uma linha */}
-            <div className="form-row-unified">
-              {/* Campo Projeto */}
-              <div className="form-field-projeto">
-                <label htmlFor="projeto-dropdown" style={{ display: 'block', marginBottom: '4px', fontWeight: 500 }}>
-                  Projeto *
-                </label>
-                <Dropdown
-                  items={projetos}
-                  selection={this.projetoSelection}
-                  disabled={isLoadingProjetos || projetos.length === 0}
-                  placeholder="Selecione um projeto"
-                />
-                {projetos.length === 0 && !isLoadingProjetos && (
-                  <small style={{ display: 'block', marginTop: '4px', color: '#d32f2f', fontSize: '11px' }}>
-                    ⚠️ Nenhum projeto
-                  </small>
-                )}
-              </div>
+            {/* Form Card */}
+            <Card className="form-card">
+              <div className="flex-column" style={{ padding: '16px' }}>
+                <h3 style={{ marginTop: 0, marginBottom: '16px' }}>Cadastro de Atividade</h3>
 
-              {/* Campo Nome */}
-              <div className="form-field-standard">
-                <label style={{ display: 'block', marginBottom: '4px', fontWeight: 500 }}>
-                  Nome *
-                </label>
-                <TextField
-                  value={nomeAtividade}
-                  onChange={this.onNomeAtividadeChange}
-                  placeholder="Digite o nome"
-                  width={TextFieldWidth.standard}
-                  ariaLabel="Nome da atividade"
-                  disabled={isLoading}
-                />
-              </div>
+                {/* Form Grid Row */}
+                <div className="form-row-grid">
+                  {/* Campo Projeto */}
+                  <div className="form-field-projeto">
+                    <label htmlFor="projeto-dropdown" style={{ display: 'block', marginBottom: '4px', fontWeight: 500 }}>
+                      Projeto *
+                    </label>
+                    <Dropdown
+                      items={projetos}
+                      selection={this.projetoSelection}
+                      disabled={isLoadingProjetos || projetos.length === 0}
+                      placeholder="Selecione um projeto"
+                    />
+                    {projetos.length === 0 && !isLoadingProjetos && (
+                      <small style={{ display: 'block', marginTop: '4px', color: '#d32f2f', fontSize: '11px' }}>
+                        ⚠️ Nenhum projeto
+                      </small>
+                    )}
+                  </div>
 
-              {/* Campo Descrição */}
-              <div className="form-field-standard">
-                <label style={{ display: 'block', marginBottom: '4px', fontWeight: 500 }}>
-                  Descrição
-                </label>
-                <TextField
-                  value={descricao}
-                  onChange={this.onDescricaoChange}
-                  placeholder="Digite uma descrição"
-                  width={TextFieldWidth.standard}
-                  ariaLabel="Descrição da atividade"
-                  disabled={isLoading}
-                />
-              </div>
+                  {/* Campo Nome */}
+                  <div className="form-field-standard">
+                    <label style={{ display: 'block', marginBottom: '4px', fontWeight: 500 }}>
+                      Nome *
+                    </label>
+                    <TextField
+                      value={nomeAtividade}
+                      onChange={this.onNomeAtividadeChange}
+                      placeholder="Digite o nome"
+                      width={TextFieldWidth.standard}
+                      ariaLabel="Nome da atividade"
+                      disabled={isLoading}
+                    />
+                  </div>
 
-              {/* Botão Adicionar/Atualizar */}
-              <div className="form-field-button">
-                <div style={{ height: '24px' }}></div>
-                <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-                  <Button
-                    text={isLoading ? "Salvando..." : (atividadeEmEdicao ? "Atualizar" : "Adicionar")}
-                    primary={true}
-                    onClick={this.adicionarAtividade}
-                    iconProps={{ iconName: isLoading ? 'Sync' : (atividadeEmEdicao ? 'Save' : 'Add') }}
-                    disabled={isLoading}
-                  />
-                  {atividadeEmEdicao && (
+                  {/* Campo Descrição */}
+                  <div className="form-field-standard">
+                    <label style={{ display: 'block', marginBottom: '4px', fontWeight: 500 }}>
+                      Descrição
+                    </label>
+                    <TextField
+                      value={descricao}
+                      onChange={this.onDescricaoChange}
+                      placeholder="Digite uma descrição"
+                      width={TextFieldWidth.standard}
+                      ariaLabel="Descrição da atividade"
+                      disabled={isLoading}
+                    />
+                  </div>
+                </div>
+
+                {/* Info Text */}
+                <div style={{ marginTop: '12px', fontSize: '12px', color: '#666' }}>
+                  {atividadeEmEdicao ? (
+                    <span>✏️ Modo edição: <strong>{atividadeEmEdicao}</strong></span>
+                  ) : (
+                    <span>* campos obrigatórios</span>
+                  )}
+                </div>
+
+                {/* Action Buttons only in edit mode */}
+                {atividadeEmEdicao && (
+                  <div style={{ marginTop: '16px', display: 'flex', gap: '8px' }}>
+                    <Button
+                      text={isLoading ? "Salvando..." : "Atualizar"}
+                      primary={true}
+                      onClick={this.adicionarAtividade}
+                      iconProps={{ iconName: isLoading ? 'Sync' : 'Save' }}
+                      disabled={isLoading}
+                    />
                     <Button
                       text="Cancelar"
                       onClick={this.cancelarEdicao}
                       disabled={isLoading}
                     />
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
-            </div>
+            </Card>
 
-            {/* Loading de Atividades */}
+            {/* TABLE CARD */}
+            {!isLoadingAtividades && atividades.length > 0 && (
+              <Card className="table-card">
+                <div className="flex-column" style={{ padding: '16px' }}>
+                  <h3 style={{ marginTop: 0, marginBottom: '12px' }}>
+                    Lista de Atividades ({atividades.length})
+                  </h3>
+                  <div className="h-scroll-auto">
+                    <Table
+                      columns={columns}
+                      itemProvider={new ArrayItemProvider(atividades)}
+                      role="table"
+                      containerClassName="h-scroll-auto"
+                    />
+                  </div>
+                </div>
+              </Card>
+            )}
+
+            {/* Loading State */}
             {isLoadingAtividades && (
               <div className="flex-row flex-center" style={{
                 padding: '32px',
@@ -920,20 +969,7 @@ export class AtividadesCadastro extends React.Component<{}, {
               </div>
             )}
 
-            {/* Tabela de Atividades */}
-            {!isLoadingAtividades && atividades.length > 0 && (
-              <div className="flex-column" style={{ marginTop: '24px' }}>
-                <h3 style={{ marginBottom: '8px' }}>Lista de Atividades ({atividades.length})</h3>
-                <Table
-                  columns={columns}
-                  itemProvider={new ArrayItemProvider(atividades)}
-                  role="table"
-                  containerClassName="h-scroll-auto"
-                />
-              </div>
-            )}
-
-            {/* Mensagem quando não há atividades */}
+            {/* Empty State */}
             {!isLoadingAtividades && atividades.length === 0 && (
               <div className="flex-row flex-center" style={{
                 padding: '32px',
@@ -942,15 +978,15 @@ export class AtividadesCadastro extends React.Component<{}, {
               }}>
                 <div>
                   <Icon iconName="Add" size={IconSize.large} style={{ marginBottom: '8px', opacity: 0.3 }} />
-                  <p>Nenhuma atividade cadastrada. Adicione sua primeira atividade acima.</p>
-                  <p style={{ fontSize: '12px', marginTop: '8px' }}>
-                    Projetos carregados: {projetos.length}
+                  <p>Nenhuma atividade cadastrada.</p>
+                  <p style={{ fontSize: '12px', marginTop: '8px', color: '#999' }}>
+                    Use o formulário acima para adicionar sua primeira atividade.
                   </p>
                 </div>
               </div>
             )}
           </div>
-        </Card>
+        </Page>
 
         {/* Dialog de Confirmação de Exclusão */}
         {dialogAberto && atividadeParaExcluir && (

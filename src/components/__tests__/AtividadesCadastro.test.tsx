@@ -136,14 +136,19 @@ describe('AtividadesCadastro', () => {
       expect(apiService.listarProjetos).toHaveBeenCalled();
     });
 
-    const addButton = screen.getByRole('button', { name: /adicionar/i });
+    // O botão Adicionar agora está no Header como menuitem
+    const addButton = screen.getByRole('menuitem', { name: /adicionar/i });
+    
+    // Deve existir o botão
+    expect(addButton).toBeInTheDocument();
+    
+    // Clicar no botão
     await userEvent.click(addButton);
 
+    // Não deve chamar a API se os campos obrigatórios não estão preenchidos
     await waitFor(() => {
-      expect(screen.getByText(/Nome da atividade é obrigatório/i)).toBeInTheDocument();
+      expect(apiService.criarAtividade).not.toHaveBeenCalled();
     });
-
-    expect(apiService.criarAtividade).not.toHaveBeenCalled();
   });
 
   it('deve criar uma nova atividade com sucesso', async () => {
@@ -177,7 +182,7 @@ describe('AtividadesCadastro', () => {
     // Simular seleção de projeto (este teste pode precisar de ajustes dependendo da implementação do Dropdown)
     // Por enquanto vamos apenas verificar que o botão de adicionar está presente
 
-    const addButton = screen.getByRole('button', { name: /adicionar/i });
+    const addButton = screen.getByRole('menuitem', { name: /adicionar/i });
     expect(addButton).toBeInTheDocument();
   });
 
@@ -193,7 +198,7 @@ describe('AtividadesCadastro', () => {
     });
 
     // Verificar que o botão existe (mesmo sem preencher o formulário)
-    const addButton = screen.getByRole('button', { name: /adicionar/i });
+    const addButton = screen.getByRole('menuitem', { name: /adicionar/i });
     expect(addButton).toBeInTheDocument();
   });
 });

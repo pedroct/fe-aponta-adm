@@ -1,0 +1,166 @@
+/* ===== MAIN CONTAINER ===== */
+.atividades-cadastro-container {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: #f6f6f6;
+}
+
+/* ===== PAGE WRAPPER ===== */
+.page-content-wrapper {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ===== CARDS ===== */
+.form-card,
+.table-card {
+  background: white;
+  border: 1px solid #d3d3d3;
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-card {
+  order: 1;
+}
+
+.table-card {
+  order: 2;
+}
+
+/* ===== FORM GRID ===== */
+.form-row-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+/* Form Fields */
+.form-field-projeto {
+  min-width: 180px;
+}
+
+.form-field-standard {
+  min-width: 200px;
+}
+
+/* Labels */
+.form-row-grid label {
+  display: block;
+  font-weight: 500;
+  font-size: 13px;
+  margin-bottom: 4px;
+  color: #3c3c3c;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .form-row-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .form-row-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .page-content-wrapper {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .form-card,
+  .table-card {
+    margin: 0;
+  }
+}
+
+/* ===== TABLE STYLES ===== */
+.h-scroll-auto {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Table cells styling */
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.flex-row.scroll-hidden {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.flex-row.flex-center {
+  justify-content: center;
+}
+
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ===== EMPTY STATES ===== */
+.flex-column.flex-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ===== ICONS ===== */
+.bolt-icon {
+  display: inline-block;
+  margin-right: 8px;
+}
+
+/* ===== BUTTONS ===== */
+.form-row-grid .bolt-button {
+  margin-top: auto;
+}
+
+/* ===== UTILITY CLASSES ===== */
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-grow {
+  flex-grow: 1;
+}
+
+.rhythm-vertical-16 {
+  gap: 16px;
+}
+
+/* Header alignment with form */
+.azure-devops-header {
+  background-color: white;
+  border-bottom: 1px solid #d3d3d3;
+}
+
+/* Remove default padding from Page component */
+::deep .page-content {
+  padding: 0;
+}
