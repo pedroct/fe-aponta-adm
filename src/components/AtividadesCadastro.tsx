@@ -44,9 +44,6 @@ import {
   Header,
   TitleSize
 } from 'azure-devops-ui/Header';
-import {
-  Page
-} from 'azure-devops-ui/Page';
 
 import 'azure-devops-ui/Core/override.css';
 import '../styles/atividades-refactored.css';
@@ -824,8 +821,7 @@ export class AtividadesCadastro extends React.Component<{}, {
 
     return (
       <div ref={this.rootRef} className="atividades-cadastro-container">
-        <Page>
-          <Header
+        <Header
             title="Gestão de Atividades"
             titleSize={TitleSize.Large}
             commandBarItems={commandBarItems}
@@ -986,7 +982,6 @@ export class AtividadesCadastro extends React.Component<{}, {
               </div>
             )}
           </div>
-        </Page>
 
         {/* Dialog de Confirmação de Exclusão */}
         {dialogAberto && atividadeParaExcluir && (
