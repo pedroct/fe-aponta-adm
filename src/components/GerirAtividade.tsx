@@ -150,47 +150,62 @@ export class GerirAtividade extends React.Component<{}, IGerirAtividadeState> {
       {
         id: 'nome',
         name: 'Atividade',
-        width: 250,
+        width: -40,
         onSize: () => { },
         renderCell: (rowIndex: number, columnIndex: number, tableColumn: ITableColumn<Atividade>, atividade: Atividade) => (
-          <SimpleTableCell columnIndex={columnIndex} key={`${rowIndex}-${columnIndex}`}>{atividade.nome}</SimpleTableCell>
+          <SimpleTableCell columnIndex={columnIndex} key={`${rowIndex}-${columnIndex}`}>
+            <span className="bolt-table-cell-text">{atividade.nome}</span>
+          </SimpleTableCell>
         )
       },
       {
         id: 'projeto',
         name: 'Projeto',
-        width: 150,
+        width: 120,
         onSize: () => { },
         renderCell: (rowIndex: number, columnIndex: number, tableColumn: ITableColumn<Atividade>, atividade: Atividade) => (
-          <SimpleTableCell columnIndex={columnIndex} key={`${rowIndex}-${columnIndex}`}>{atividade.projeto}</SimpleTableCell>
+          <SimpleTableCell columnIndex={columnIndex} key={`${rowIndex}-${columnIndex}`}>
+            <span className="bolt-table-cell-text">{atividade.projeto}</span>
+          </SimpleTableCell>
         )
       },
       {
         id: 'descricao',
         name: 'Descrição',
-        width: 350,
+        width: -35,
         onSize: () => { },
         renderCell: (rowIndex: number, columnIndex: number, tableColumn: ITableColumn<Atividade>, atividade: Atividade) => (
-          <SimpleTableCell columnIndex={columnIndex} key={`${rowIndex}-${columnIndex}`}>{atividade.descricao}</SimpleTableCell>
+          <SimpleTableCell columnIndex={columnIndex} key={`${rowIndex}-${columnIndex}`}>
+            <span className="bolt-table-cell-text">{atividade.descricao}</span>
+          </SimpleTableCell>
         )
       },
       {
         id: 'criadoPor',
         name: 'Criado por',
-        width: 150,
+        width: 140,
         onSize: () => { },
         renderCell: (rowIndex: number, columnIndex: number, tableColumn: ITableColumn<Atividade>, atividade: Atividade) => (
-          <SimpleTableCell columnIndex={columnIndex} key={`${rowIndex}-${columnIndex}`}>{atividade.criadoPor}</SimpleTableCell>
+          <SimpleTableCell columnIndex={columnIndex} key={`${rowIndex}-${columnIndex}`}>
+            <span className="bolt-table-cell-text">{atividade.criadoPor}</span>
+          </SimpleTableCell>
         )
       },
       {
         id: 'ativo',
         name: 'Ativo',
-        width: 100,
+        width: 80,
         onSize: () => { },
         renderCell: (rowIndex: number, columnIndex: number, tableColumn: ITableColumn<Atividade>, atividade: Atividade) => (
           <SimpleTableCell columnIndex={columnIndex} key={`${rowIndex}-${columnIndex}`}>
-            {atividade.ativo && <input type="checkbox" checked readOnly />}
+            {atividade.ativo && (
+              <input 
+                type="checkbox" 
+                checked 
+                readOnly 
+                className="table-checkbox"
+              />
+            )}
           </SimpleTableCell>
         )
       },
@@ -201,18 +216,20 @@ export class GerirAtividade extends React.Component<{}, IGerirAtividadeState> {
         onSize: () => { },
         renderCell: (rowIndex: number, columnIndex: number, tableColumn: ITableColumn<Atividade>, atividade: Atividade) => (
           <SimpleTableCell columnIndex={columnIndex} key={`${rowIndex}-${columnIndex}`}>
-            <Button
-              text=""
-              iconProps={{ iconName: 'Edit' }}
-              onClick={() => { }}
-              ariaLabel="Editar"
-            />
-            <Button
-              text=""
-              iconProps={{ iconName: 'Delete' }}
-              onClick={() => this.deletarAtividade(atividade.id)}
-              ariaLabel="Deletar"
-            />
+            <div className="table-actions">
+              <Button
+                ariaLabel="Editar atividade"
+                className="table-action-button"
+                iconProps={{ iconName: 'Edit' }}
+                onClick={() => { }}
+              />
+              <Button
+                ariaLabel="Deletar atividade"
+                className="table-action-button"
+                iconProps={{ iconName: 'Delete' }}
+                onClick={() => this.deletarAtividade(atividade.id)}
+              />
+            </div>
           </SimpleTableCell>
         )
       }
@@ -247,28 +264,30 @@ export class GerirAtividade extends React.Component<{}, IGerirAtividadeState> {
         {/* Page Content */}
         <div className="page-content">
           
-          {/* Formulário */}
+          {/* Card - Formulário de Cadastro */}
           <Card className="form-card">
             <div className="form-content">
               <h3 className="form-title">Cadastro de Atividade</h3>
 
+              {/* Grid do Formulário */}
               <div className="form-row">
                 {/* Campo Projeto */}
                 <div className="form-field">
                   <label className="form-label">
-                    Projeto *
+                    Projeto <span aria-label="obrigatório">*</span>
                   </label>
                   <Dropdown
                     items={projetos}
                     selection={this.projetoSelection}
                     placeholder="Selecione um projeto"
+                    ariaLabel="Selecione um projeto"
                   />
                 </div>
 
                 {/* Campo Nome */}
                 <div className="form-field">
                   <label className="form-label">
-                    Nome *
+                    Nome <span aria-label="obrigatório">*</span>
                   </label>
                   <TextField
                     value={nomeAtividade}
@@ -294,18 +313,25 @@ export class GerirAtividade extends React.Component<{}, IGerirAtividadeState> {
                 </div>
               </div>
 
+              {/* Texto informativo */}
               <div className="form-info">
-                * campos obrigatórios
+                <span>* campos obrigatórios</span>
               </div>
             </div>
           </Card>
 
-          {/* Tabela de Atividades */}
+          {/* Card - Tabela de Atividades */}
           <Card className="table-card">
             <div className="table-content">
+              {/* Título da Tabela */}
               <h3 className="table-title">
-                Lista de Atividades ({atividades.length})
+                Lista de Atividades
+                <span style={{ marginLeft: '8px', fontWeight: 'normal', color: 'rgba(0, 0, 0, 0.55)' }}>
+                  ({atividades.length})
+                </span>
               </h3>
+              
+              {/* Tabela */}
               <div className="table-wrapper">
                 <Table
                   columns={columns}
@@ -314,6 +340,7 @@ export class GerirAtividade extends React.Component<{}, IGerirAtividadeState> {
                   containerClassName="table-container"
                   showHeader={true}
                   showLines={true}
+                  ariaLabel="Lista de atividades"
                 />
               </div>
             </div>

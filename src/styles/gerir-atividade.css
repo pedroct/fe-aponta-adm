@@ -1,29 +1,34 @@
-/* Gerir Atividade - Layout seguindo Azure DevOps UI Standards */
+/* Gerir Atividade - Seguindo padrões Azure DevOps UI e Formula Design System */
 
+/* Layout Principal */
 .gerir-atividade-wrapper {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   background-color: #f6f6f6;
+  font-family: "Segoe UI", "-apple-system", BlinkMacSystemFont, Roboto, "Helvetica Neue", Helvetica, Ubuntu, Arial, sans-serif;
 }
 
-/* Page Content - abaixo do Header */
+/* Conteúdo da Página - abaixo do Header */
 .page-content {
   flex: 1;
   padding: 16px;
   background-color: #f6f6f6;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-/* Card Styles - seguindo padrão Azure DevOps */
+/* Card Container - Padrão Azure DevOps */
 .form-card,
 .table-card {
   background-color: #ffffff;
   border: 1px solid #e5e5e5;
   border-radius: 2px;
-  margin-bottom: 16px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Conteúdo dos Cards */
 .form-content {
   padding: 16px;
   display: flex;
@@ -34,24 +39,31 @@
   padding: 0;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
-/* Títulos dos Cards - title-s: semibold, 17px */
+/* Títulos dos Cards - Semibold 17px (title-s) */
 .form-title,
 .table-title {
-  margin: 16px 16px 16px 16px;
+  margin: 0;
+  padding: 16px 16px 0 16px;
   font-size: 17px;
   font-weight: 600;
   color: rgba(0, 0, 0, 0.9);
-  line-height: 1.5;
-  padding: 0;
+  line-height: 1.47;
 }
 
-/* Form Grid - 3 colunas */
+.table-title {
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+/* Layout do Formulário - Grid 3 colunas */
 .form-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
+  margin-top: 16px;
   margin-bottom: 16px;
 }
 
@@ -61,25 +73,28 @@
   min-width: 0;
 }
 
+/* Labels do Formulário */
 .form-label {
   display: block;
   margin-bottom: 8px;
-  font-weight: 500;
-  color: rgba(0, 0, 0, 0.55);
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.9);
   font-size: 13px;
   line-height: 1.5;
 }
 
-/* Info text */
+/* Texto informativo */
 .form-info {
   font-size: 12px;
   color: rgba(0, 0, 0, 0.55);
   margin-top: 12px;
+  margin-bottom: 0;
 }
 
-/* Table Styles - padrão Azure DevOps */
+/* Wrapper da Tabela */
 .table-wrapper {
   overflow-x: auto;
+  background-color: #ffffff;
 }
 
 .table-container {
@@ -87,12 +102,14 @@
   display: table;
 }
 
-/* Estilo padrão de tabelas Azure DevOps */
+/* Estilos da Tabela - Padrão Azure DevOps Table Component */
 :global .bolt-table {
   width: 100%;
   border-collapse: collapse;
+  background-color: #ffffff;
 }
 
+/* Header da Tabela - 40px height */
 :global .bolt-table > thead {
   background-color: #f6f6f6;
   height: 40px;
@@ -100,17 +117,22 @@
 
 :global .bolt-table > thead > tr > th {
   padding: 0 12px;
+  height: 40px;
   border-bottom: 1px solid #e5e5e5;
   font-size: 13px;
   font-weight: 600;
   color: rgba(0, 0, 0, 0.9);
   text-align: left;
   user-select: none;
+  vertical-align: middle;
+  background-color: #f6f6f6;
 }
 
+/* Linhas da Tabela */
 :global .bolt-table > tbody > tr {
   height: 40px;
   border-bottom: 1px solid #f0f0f0;
+  background-color: #ffffff;
 }
 
 :global .bolt-table > tbody > tr:hover {
@@ -119,18 +141,110 @@
 
 :global .bolt-table > tbody > tr > td {
   padding: 0 12px;
-  font-size: 14px;
+  height: 40px;
+  font-size: 13px;
   color: rgba(0, 0, 0, 0.9);
+  vertical-align: middle;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* Células com Links */
+:global .bolt-table-cell-content-with-link {
+  color: #0078d4;
+  text-decoration: none;
+}
+
+:global .bolt-table-cell-content-with-link:hover {
+  text-decoration: underline;
+}
+
+/* Botões de Ação na Tabela */
+:global .bolt-table > tbody > tr > td .ms-Button {
+  margin: 0 4px;
+  padding: 2px 6px;
+  height: 24px;
+  min-width: 24px;
+}
+
+:global .bolt-table > tbody > tr > td .ms-Button:first-child {
+  margin-left: 0;
+}
+
+/* Checkbox na Tabela */
+:global .bolt-table > tbody > tr > td input[type="checkbox"] {
+  margin: 0;
   vertical-align: middle;
 }
 
-/* Action buttons in table */
-:global .bolt-table > tbody > tr > td .ms-Button {
-  margin: 0 4px;
-  padding: 4px 8px;
+/* Container de Ações na Tabela */
+.table-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
 }
 
-/* Responsive */
+/* Botão de Ação na Tabela */
+.table-action-button {
+  padding: 0 !important;
+  height: 24px !important;
+  width: 24px !important;
+  min-width: 24px !important;
+}
+
+/* Texto na Célula da Tabela */
+.bolt-table-cell-text {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Estilo para Input no Formulário */
+:global .ms-TextField {
+  width: 100%;
+}
+
+:global .ms-TextField input {
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 8px 12px;
+  border: 1px solid #e5e5e5;
+  border-radius: 2px;
+}
+
+:global .ms-TextField input:focus {
+  border-color: #0078d4;
+  outline: none;
+  box-shadow: 0 0 0 1px #0078d4;
+}
+
+/* Dropdown */
+:global .ms-Dropdown {
+  width: 100%;
+  min-height: 32px;
+}
+
+:global .ms-Dropdown-title {
+  font-size: 13px;
+  padding: 8px 12px;
+  border: 1px solid #e5e5e5;
+  border-radius: 2px;
+}
+
+:global .ms-Dropdown:focus .ms-Dropdown-title {
+  border-color: #0078d4;
+  box-shadow: 0 0 0 1px #0078d4;
+}
+
+
+/* Estilos Responsivos */
+@media (max-width: 1024px) {
+  .form-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
 @media (max-width: 768px) {
   .page-content {
     padding: 12px;
@@ -139,11 +253,13 @@
   .form-card,
   .table-card {
     margin-bottom: 12px;
+    border-radius: 2px;
   }
 
   .form-row {
     grid-template-columns: 1fr;
     gap: 12px;
+    margin-top: 12px;
   }
 
   .form-content,
@@ -153,22 +269,46 @@
 
   .form-title,
   .table-title {
-    font-size: 14px;
-    margin: 12px 0 12px 0;
+    font-size: 15px;
+    padding: 12px 12px 0 12px;
+    margin: 0;
   }
 
+  .table-title {
+    padding-bottom: 12px;
+  }
+
+  /* Tabela responsiva em dispositivos pequenos */
   :global .bolt-table > thead {
     display: none;
   }
 
   :global .bolt-table > tbody > tr {
     display: block;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
+    border: 1px solid #e5e5e5;
+    border-radius: 2px;
   }
 
   :global .bolt-table > tbody > tr > td {
     display: block;
     padding: 8px 12px;
     border: none;
+    border-bottom: 1px solid #f0f0f0;
+    text-align: left;
+  }
+
+  :global .bolt-table > tbody > tr > td:last-child {
+    border-bottom: none;
+  }
+
+  :global .bolt-table > tbody > tr > td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+    color: rgba(0, 0, 0, 0.9);
+    font-size: 12px;
   }
 }
+
