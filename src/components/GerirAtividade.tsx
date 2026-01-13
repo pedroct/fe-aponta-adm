@@ -230,7 +230,7 @@ export class GerirAtividade extends React.Component<{}, IGerirAtividadeState> {
     ];
 
     return (
-      <div ref={this.rootRef} className="gerir-atividade-container">
+      <div ref={this.rootRef} className="gerir-atividade-wrapper">
         {/* Header */}
         <Header
           title="Gerir Atividades"
@@ -239,18 +239,18 @@ export class GerirAtividade extends React.Component<{}, IGerirAtividadeState> {
           separator={true}
         />
 
-        {/* Conteúdo Principal */}
-        <div className="page-content-wrapper">
+        {/* Page Content */}
+        <div className="page-content">
           
           {/* Formulário */}
           <Card className="form-card">
-            <div className="form-content" style={{ padding: '16px' }}>
-              <h3 style={{ marginTop: 0, marginBottom: '16px' }}>Cadastro de Atividade</h3>
+            <div className="form-content">
+              <h3 className="form-title">Cadastro de Atividade</h3>
 
               <div className="form-row">
                 {/* Campo Projeto */}
                 <div className="form-field">
-                  <label style={{ display: 'block', marginBottom: '4px', fontWeight: 500 }}>
+                  <label className="form-label">
                     Projeto *
                   </label>
                   <Dropdown
@@ -262,7 +262,7 @@ export class GerirAtividade extends React.Component<{}, IGerirAtividadeState> {
 
                 {/* Campo Nome */}
                 <div className="form-field">
-                  <label style={{ display: 'block', marginBottom: '4px', fontWeight: 500 }}>
+                  <label className="form-label">
                     Nome *
                   </label>
                   <TextField
@@ -276,7 +276,7 @@ export class GerirAtividade extends React.Component<{}, IGerirAtividadeState> {
 
                 {/* Campo Descrição */}
                 <div className="form-field">
-                  <label style={{ display: 'block', marginBottom: '4px', fontWeight: 500 }}>
+                  <label className="form-label">
                     Descrição
                   </label>
                   <TextField
@@ -288,13 +288,17 @@ export class GerirAtividade extends React.Component<{}, IGerirAtividadeState> {
                   />
                 </div>
               </div>
+
+              <div className="form-info">
+                * campos obrigatórios
+              </div>
             </div>
           </Card>
 
           {/* Tabela de Atividades */}
           <Card className="table-card">
-            <div className="table-content" style={{ padding: '16px' }}>
-              <h3 style={{ marginTop: 0, marginBottom: '12px' }}>
+            <div className="table-content">
+              <h3 className="table-title">
                 Lista de Atividades ({atividades.length})
               </h3>
               <div className="table-wrapper">

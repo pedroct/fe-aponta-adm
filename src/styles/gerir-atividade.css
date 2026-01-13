@@ -1,41 +1,50 @@
-/* Gerir Atividade Layout */
+/* Gerir Atividade - Layout seguindo Azure DevOps UI Standards */
 
-.gerir-atividade-container {
+.gerir-atividade-wrapper {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  background-color: #ffffff;
+  min-height: 100vh;
+  background-color: #fafbfc;
 }
 
-/* Page Content Wrapper */
-.page-content-wrapper {
+/* Page Content - abaixo do Header */
+.page-content {
   flex: 1;
-  overflow-y: auto;
-  padding: 20px;
-  max-width: 1400px;
-  margin: 0 auto;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  padding: 16px 0;
+  background-color: #fafbfc;
 }
 
-/* Card Styles */
+/* Card Styles - seguindo padrão Azure DevOps */
 .form-card,
 .table-card {
   background-color: #ffffff;
-  border: 1px solid #e1e4e8;
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  border: 1px solid #d3d3d3;
+  border-radius: 2px;
+  margin: 0 16px 16px 16px;
 }
 
-.form-content,
-.table-content {
+.form-content {
+  padding: 16px;
   display: flex;
   flex-direction: column;
 }
 
-/* Form Grid */
+.table-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Títulos dos Cards */
+.form-title,
+.table-title {
+  margin: 0 0 16px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+/* Form Grid - 3 colunas */
 .form-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -49,19 +58,19 @@
   min-width: 0;
 }
 
-.form-field label {
+.form-label {
+  display: block;
   margin-bottom: 4px;
   font-weight: 500;
-  color: #333;
+  color: #333333;
   font-size: 13px;
 }
 
-.form-field input,
-.form-field select {
-  padding: 8px 12px;
-  border: 1px solid #d3d3d3;
-  border-radius: 3px;
-  font-size: 13px;
+/* Info text */
+.form-info {
+  font-size: 12px;
+  color: #666666;
+  margin-top: 8px;
 }
 
 /* Table Styles */
@@ -71,14 +80,18 @@
 }
 
 .table-container {
-  min-width: 800px;
+  min-width: 100%;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .page-content-wrapper {
-    padding: 12px;
-    gap: 12px;
+  .page-content {
+    padding: 12px 0;
+  }
+
+  .form-card,
+  .table-card {
+    margin: 0 12px 12px 12px;
   }
 
   .form-row {
@@ -86,19 +99,14 @@
     gap: 12px;
   }
 
-  .form-card,
-  .table-card {
-    border-radius: 2px;
-  }
-
   .form-content,
   .table-content {
-    padding: 12px !important;
+    padding: 12px;
   }
 
-  .form-content h3,
-  .table-content h3 {
-    font-size: 16px;
+  .form-title,
+  .table-title {
+    font-size: 14px;
     margin-bottom: 12px;
   }
 }
